@@ -1,0 +1,10 @@
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\MoPConsole.exe.config
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\MoPConsole.exe
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\MoPConsole.pdb
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\PuppetMaster.dll
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\log4net.dll
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\PuppetMaster.pdb
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\bin\Debug\log4net.xml
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\obj\Debug\MoPConsole.csprojResolveAssemblyReference.cache
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\obj\Debug\MoPConsole.exe
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\MoPConsole\obj\Debug\MoPConsole.pdb

@@ -1,0 +1,8 @@
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\bin\Debug\PuppetMaster.dll.config
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\bin\Debug\PuppetMaster.dll
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\bin\Debug\PuppetMaster.pdb
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\bin\Debug\log4net.dll
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\bin\Debug\log4net.xml
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\obj\Debug\PuppetMaster.csprojResolveAssemblyReference.cache
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\obj\Debug\PuppetMaster.dll
+Y:\Documents\IST\Mestrado\DAD\DADSTORM\PuppetMaster\PuppetMaster\obj\Debug\PuppetMaster.pdb
