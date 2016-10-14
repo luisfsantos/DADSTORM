@@ -6,5 +6,5 @@
 *.nupkg
 *.nchrunchproject
 
-*/bin
-*/obj
+bin/
+obj/
