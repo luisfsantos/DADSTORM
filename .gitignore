@@ -1,1 +1,10 @@
 .DS_Store
+*.suo
+*.user
+*.cachefile
+*.trx
+*.nupkg
+*.nchrunchproject
+
+*/bin
+*/obj
