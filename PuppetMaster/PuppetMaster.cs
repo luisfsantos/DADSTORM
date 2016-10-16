@@ -8,7 +8,7 @@ namespace DADSTORM.PuppetMaster {
     public class PuppetMaster : IPuppetMaster {
         private static readonly log4net.ILog log =
                     log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        KeyValuePair<string, List<string>> operators = new KeyValuePair<string, List<string>>();
+        Dictionary<string, List<string>> operators = new Dictionary<string, List<string>>();
         private static readonly PuppetMaster instance = new PuppetMaster();
 
         private PuppetMaster() { }
