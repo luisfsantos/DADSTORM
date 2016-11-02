@@ -64,7 +64,7 @@ namespace DADSTORM.MoPForm {
         private void StartButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(StartOpIdTextBox.Text)) {
                 StartService service = new StartService(StartOpIdTextBox.Text);
-                service.execute();
+                service.assyncexecute();
             }
                 
         }
@@ -72,20 +72,20 @@ namespace DADSTORM.MoPForm {
         private void IntervalButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(IntervalOpIdTextBox.Text) && !String.IsNullOrEmpty(IntervalTimeTextBox.Text)) {
                 IntervalService service = new IntervalService(StartOpIdTextBox.Text, Int32.Parse(IntervalTimeTextBox.Text));
-                service.execute();
+                service.assyncexecute();
             }
         }
 
         private void WaitButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(WaitTimeTextBox.Text)) {
                 WaitService service = new WaitService(Int32.Parse(WaitTimeTextBox.Text));
-                service.execute();
+                service.assyncexecute();
             }
         }
 
         private void StatusButton_Click(object sender, EventArgs e) {
             StatusService service = new StatusService();
-            service.execute();
+            service.assyncexecute();
         }
 
         private void CrashButton_Click(object sender, EventArgs e) {
