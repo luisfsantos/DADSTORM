@@ -9,37 +9,11 @@ namespace DADSTORM.PuppetMaster.Services
 {
     delegate void ServiceWork();
 
-    public sealed class Singleton
-    {
-        private static volatile Singleton instance;
-        private static object syncRoot = new Object();
-
-        private Singleton() { }
-
-        public static Singleton Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new Singleton();
-                    }
-                }
-
-                return instance;
-            }
-        }
-    }
-
     sealed class ServiceThreads
     {
         private readonly int numberThreads = 10;
         private readonly int bufferSize = 20;
-        private static volatile ServiceThreads instance;
-        private static object syncRoot = new Object();
+        private static volatile ServiceThreads instance = new ServiceThreads();
         private Queue<ServiceWork> workBuffer;
 
         public ServiceThreads()
@@ -58,15 +32,6 @@ namespace DADSTORM.PuppetMaster.Services
         {
             get
             {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new ServiceThreads();
-                    }
-                }
-
                 return instance;
             }
         }
