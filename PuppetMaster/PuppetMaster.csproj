@@ -50,7 +50,6 @@
     <Compile Include="Services\PuppetMasterService.cs" />
     <Compile Include="Services\ServiceThreads.cs" />
     <Compile Include="Services\StartService.cs" />
-    <Compile Include="IPuppetMaster.cs" />
     <Compile Include="PuppetMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\StatusService.cs" />
@@ -60,6 +59,12 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteInterfaces\RemoteInterfaces.csproj">
+      <Project>{f5ec1dff-b0b7-4a52-84c0-591434ca3faf}</Project>
+      <Name>RemoteInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
