@@ -58,7 +58,7 @@ namespace DADSTORM.PuppetMaster {
             #endregion
 
             #region Communicate with PCSs
-            foreach (string ip in parser.getPcsIp())
+            foreach (string ip in parser.GetPcsIps())
             {
                 string url = "tcp://" + ip + ":10000/PCS";
 
@@ -72,6 +72,7 @@ namespace DADSTORM.PuppetMaster {
             #region Create Operators & Replicas
 
             #endregion
+            return true; //FIXME
 
         }
 

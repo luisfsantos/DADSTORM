@@ -1,7 +1,7 @@
 ﻿using DADSTORM.CommonTypes;
+using DADSTORM.CommonTypes.Parsing;
 using DADSTORM.PuppetMaster;
 using DADSTORM.PuppetMaster.Services;
-using MoPConsole.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +111,11 @@ namespace MoPConsole
                     sb.AppendLine("ROUTING=" + op.Routing);
                     sb.AppendLine();
                     sb.AppendLine();
+                }
+
+                Console.WriteLine("PCS IPs");
+                foreach(string s in parser.GetPcsIps()) {
+                    Console.WriteLine(s);
                 }
 
                 Console.Write(sb.ToString());
