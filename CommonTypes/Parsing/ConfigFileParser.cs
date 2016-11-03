@@ -16,11 +16,17 @@ namespace DADSTORM.CommonTypes.Parsing {
 
         public ConfigFileParser(string pathToFile) {
             this.path = pathToFile;
-            lines = File.ReadAllText(path); //FIXME this should probably not be here?? but should only read file once
+        }
 
+        private void readLines() {
+            if (String.IsNullOrEmpty(lines)) {
+                lines = File.ReadAllText(path);
+            }
         }
 
         public Dictionary<string, OperatorData> GetOperatorsData() {
+            readLines();
+
             const string pattern = @"\w+\s+INPUT_OPS.+?\n+" +
                 @"REP_FACT\s+\w+\s+ROUTING\s+.+\n+" +
                 @"ADDRESS\s+.+\n+" +
@@ -50,12 +56,21 @@ namespace DADSTORM.CommonTypes.Parsing {
             return operators.ToDictionary(o => o.Id);
         }
 
-        public IEnumerable<string> getPcsIp()
+        public IEnumerable<string> GetPcsIps()
         {
-            throw new NotImplementedException();
+            readLines();
+            string pattern = @"tcp://(?<ip>(?:[0-9]{1,3}\.){3}[0-9]{1,3}):\d{1,5}/op";
+            Regex regex = new Regex(pattern);
+            HashSet<string> ips = new HashSet<string>();
+            foreach (Match m in regex.Matches(lines)) {
+                ips.Add(m.Result("${ip}"));
+            }
+            return ips;
         }
 
         private void ExtractOperatorInfo(Match op) {
+            readLines();
+
             OperatorData opdata = new OperatorData();
             Match match;
             string matchstr;
@@ -139,6 +154,7 @@ namespace DADSTORM.CommonTypes.Parsing {
         }
 
         public LoggingLevel GetLogging() {
+            readLines();
             const string pattern = @"(?<=LoggingLevel\s+)(\blight\b|\bfull\b)";
             string match = Regex.Match(lines, pattern).ToString();
 
@@ -154,6 +170,7 @@ namespace DADSTORM.CommonTypes.Parsing {
         }
 
         public Semantics GetSemantics() {
+            readLines();
             const string pattern = @"(?<=Semantics\s+)(\bat-most-once\b|\bat-least-once\b|\bexactly-once\b)";
             string match = Regex.Match(lines, pattern).ToString();
 
