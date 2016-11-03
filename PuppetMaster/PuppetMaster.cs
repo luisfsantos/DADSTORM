@@ -70,9 +70,18 @@ namespace DADSTORM.PuppetMaster {
             #endregion
 
             #region Create Operators & Replicas
-
+            foreach (KeyValuePair<string, OperatorData> op in operatorData) {
+                launchOperator(op);
+            }
             #endregion
 
+        }
+
+        private void launchOperator(KeyValuePair<string, OperatorData> op) {
+            string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?=:\d{1,5})/op";
+            foreach (string address in op.Value.Addresses) {
+
+            }
         }
 
 
