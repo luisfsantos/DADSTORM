@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RemoteInterfaces
 {
-    public interface IPuppetMaster
+    public interface ICommands
     {
         void start(string op_id);
 

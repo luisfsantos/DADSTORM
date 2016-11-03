@@ -50,6 +50,11 @@ namespace DADSTORM.CommonTypes.Parsing {
             return operators.ToDictionary(o => o.Id);
         }
 
+        public IEnumerable<string> getPcsIp()
+        {
+            throw new NotImplementedException();
+        }
+
         private void ExtractOperatorInfo(Match op) {
             OperatorData opdata = new OperatorData();
             Match match;

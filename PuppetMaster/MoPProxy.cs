@@ -5,9 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using RemoteInterfaces;
 
-namespace PuppetMaster
+namespace DADSTORM.PuppetMaster
 {
     public class MoPProxy : IDebug
     {
+        public void sendInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

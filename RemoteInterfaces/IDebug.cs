@@ -8,6 +8,6 @@ namespace RemoteInterfaces
 {
     public interface IDebug
     {
-        void sendInfo(string[] info);
+        void sendInfo(/* FIX ME tuple*/);
     }
 }
