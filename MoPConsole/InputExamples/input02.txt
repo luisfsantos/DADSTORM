@@ -1,0 +1,7 @@
+1 INPUT_OPS somefile.dat
+REP_FACT 2 ROUTING hashing(1)
+ADDRESS tcp://127.0.0.1:11000/op, tcp://127.0.0.1:11001/op
+OPERATOR_SPEC DUP
+
+Semantics at-least-once
+LoggingLevel full

@@ -103,8 +103,8 @@ namespace MoPConsole
                         sb.AppendFormat("{0}, ", inop);
                     }
                     sb.AppendLine("]");
-                    sb.AppendFormat("OPERATOR_SPEC: Name={0}, Params=[", op.Operator_spec.Name);
-                    foreach (string param in op.Operator_spec.Params) {
+                    sb.AppendFormat("OPERATOR_SPEC: Name={0}, Params=[", op.OperatorSpec.Name);
+                    foreach (string param in op.OperatorSpec.Params) {
                         sb.AppendFormat("{0}, ", param);
                     }
                     sb.AppendLine("]");

@@ -1,17 +1,20 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace DADSTORM.CommonTypes {
 
+    [Serializable]
     public class OperatorData { //FIXME will change when we design the operators
         public string Id { get; set; }
         public string[] Input_ops { get; set; }
         public int Rep_fact { get; set; }
-        public Routing Routing { get; set; }
+        public string Routing { get; set; }
         public string[] Addresses { get; set; }
-        public OperatorSpec Operator_spec { get; set; }
+        public OperatorSpecification OperatorSpec { get; set; }
     }
 
-    public class OperatorSpec { //FIXME will change when we design the operators
+    [Serializable]
+    public class OperatorSpecification { //FIXME will change when we design the operators
         private string name;
         public string Name {
             get { return name; }
@@ -24,7 +27,9 @@ namespace DADSTORM.CommonTypes {
         public string[] Params { get; set; }
     }
 
-    public enum Routing { Primary, Random, Hashing } //FIXME routing will be a class, Strategy pattern
+    [Serializable]
     public enum Semantics { AtMostOnce, AtLeastOnce, ExactlyOnce }
+
+    [Serializable]
     public enum LoggingLevel { Light, Full }
 }

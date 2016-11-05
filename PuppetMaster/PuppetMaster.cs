@@ -9,6 +9,8 @@ using DADSTORM.CommonTypes.Parsing;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace DADSTORM.PuppetMaster {
     public class PuppetMaster {
@@ -35,7 +37,7 @@ namespace DADSTORM.PuppetMaster {
         {
             #region Parse Config File
             ConfigFileParser parser = new ConfigFileParser(pathToFile);
-            Dictionary<string, OperatorData> operatorData = parser.GetOperatorsData();
+            Dictionary<string, OperatorData> operatorsData = parser.GetOperatorsData();
             loggingLevel = parser.GetLogging();
             semantics = parser.GetSemantics();
             #endregion
@@ -44,7 +46,7 @@ namespace DADSTORM.PuppetMaster {
             if (loggingLevel.Equals(LoggingLevel.Full))
             {
                 TcpChannel channel = new TcpChannel(PuppetMaster.PORT);
-                ChannelServices.RegisterChannel(channel, true);
+                ChannelServices.RegisterChannel(channel, false);
                 RemotingConfiguration.RegisterWellKnownServiceType(
                                         typeof(MoPProxy),
                                         PuppetMaster.NAME,
@@ -52,37 +54,73 @@ namespace DADSTORM.PuppetMaster {
             } else
             {
                 TcpChannel channel = new TcpChannel();
-                ChannelServices.RegisterChannel(channel, true);
+                ChannelServices.RegisterChannel(channel, false);
             }
             
             #endregion
 
-            #region Communicate with PCSs
+            #region Connect to PCSs
             foreach (string ip in parser.GetPcsIps())
             {
-                string url = "tcp://" + ip + ":10000/PCS";
+                string url = "tcp://" + ip + ":"+ PCSConstants.PORT + "/" + PCSConstants.NAME;
 
                 IPCS auxPCS = (IPCS)Activator.GetObject(
                                         typeof(IPCS),
                                         url);
-                pcs.Add(url, auxPCS);
+                pcs.Add(ip, auxPCS);
             }
             #endregion
 
             #region Create Operators & Replicas
-            foreach (KeyValuePair<string, OperatorData> op in operatorData) {
-                launchOperator(op);
+            foreach (KeyValuePair<string, OperatorData> op in operatorsData) {
+                launchOperator(op, operatorsData);
+                connectToOperator(op);
             }
             #endregion
+
             return true; //FIXME
 
         }
 
-        private void launchOperator(KeyValuePair<string, OperatorData> op) {
-            string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?=:\d{1,5})/op";
-            foreach (string address in op.Value.Addresses) {
-
+        private void connectToOperator(KeyValuePair<string, OperatorData> op)
+        {
+            List<ICommands> replicas = new List<ICommands>();
+            foreach (string address in op.Value.Addresses)
+            {
+                replicas.Add((ICommands)Activator.GetObject(
+                                        typeof(ICommands),
+                                        address));
             }
+            operators.Add(op.Key, replicas);
+        }
+
+        private void launchOperator(KeyValuePair<string, OperatorData> op, Dictionary<string, OperatorData> operatorsData) {
+            string pattern = @"tcp://(?<ip>(?:[0-9]{1,3}\.){3}[0-9]{1,3}):\d{1,5}/op";
+            Regex regex = new Regex(pattern);
+            int i = 1;
+            foreach (string address in op.Value.Addresses) {
+                Match match = regex.Match(address);
+                string ip = match.Result("${ip}");
+                List<string> upstream = getUpstream(op.Value.Input_ops, operatorsData);
+                pcs[ip].startProcess(i.ToString(), upstream, op.Value.OperatorSpec, op.Value.Routing, loggingLevel, semantics);
+                i++;
+            }
+        }
+
+        private List<string> getUpstream(string[] input_ops, Dictionary<string, OperatorData> operatorsData)
+        {
+            List<string> result = new List<string>();
+            foreach (string op in input_ops)
+            {
+                if (op.Contains("."))
+                {
+                    result.Add(op);
+                } else
+                {
+                    result.AddRange(operatorsData[op].Addresses);
+                }  
+            }
+            return result;
         }
 
 

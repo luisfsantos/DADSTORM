@@ -102,15 +102,8 @@ namespace DADSTORM.CommonTypes.Parsing {
             #region - match ROUTING -
             pattern = @"(?<=ROUTING\s+)random|primary|hashing\((?<hash>\d+)\)"; //uses lookbehind
             match = Regex.Match(op.ToString(), pattern);
-            matchstr = match.ToString();
-            if (matchstr.Contains("random")) {
-                opdata.Routing = Routing.Random;
-            } else if (matchstr.Contains("primary")) {
-                opdata.Routing = Routing.Primary;
-            } else {
-                opdata.Routing = Routing.Hashing; //FIXME need to add hashing field when Hashing class is done
-                //int something = int.Parse(match.Result("${hash}"));
-            }
+            opdata.Routing = match.ToString();
+            
             #endregion
 
             #region - match ADDRESSES -
@@ -141,12 +134,12 @@ namespace DADSTORM.CommonTypes.Parsing {
             pattern = @"(?<=OPERATOR_SPEC\s+)(?<op>\b\w+\b)(?<params>.+?)\n"; //uses lookbehind
 
             match = Regex.Match(op.ToString(), pattern);
-            OperatorSpec spec = new OperatorSpec();
+            OperatorSpecification spec = new OperatorSpecification();
             spec.Name = match.Result("${op}");
             matchstr = match.Result("${params}");
             matchstr = Regex.Replace(matchstr, @"(\s|[""])+", "");
             spec.Params = matchstr.Split(',');
-            opdata.Operator_spec = spec;
+            opdata.OperatorSpec = spec;
             #endregion
 
             operators.Add(opdata);

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCS", "PCS\PCS.csproj", "{F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteInterfaces", "RemoteInterfaces\RemoteInterfaces.csproj", "{F5EC1DFF-B0B7-4A52-84C0-591434CA3FAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operator", "Operator\Operator.csproj", "{7669426C-FB50-40E4-8751-B359B9DE96CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{F5EC1DFF-B0B7-4A52-84C0-591434CA3FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5EC1DFF-B0B7-4A52-84C0-591434CA3FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5EC1DFF-B0B7-4A52-84C0-591434CA3FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7669426C-FB50-40E4-8751-B359B9DE96CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7669426C-FB50-40E4-8751-B359B9DE96CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7669426C-FB50-40E4-8751-B359B9DE96CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7669426C-FB50-40E4-8751-B359B9DE96CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

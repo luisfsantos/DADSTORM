@@ -28,8 +28,9 @@ namespace DADSTORM.MoPForm {
         private void LoadConfigButton_Click(object sender, EventArgs e) {
 
             if (!String.IsNullOrEmpty(configDialog.FileName)) {
-                //TODO
-                //probably implement service in puppet master for load
+                HistoryTextBox.Text += "I am not initated yet";
+                PuppetMaster.PuppetMaster.Instance.init(configDialog.FileName);
+                HistoryTextBox.Text += "I am become man";
             }
         }
         #endregion
@@ -98,6 +99,16 @@ namespace DADSTORM.MoPForm {
 
         private void UnfreezeButton_Click(object sender, EventArgs e) {
             //TODO
+        }
+
+        public void PrintToHistory(string value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(PrintToHistory), new object[] { value });
+                return;
+            }
+            HistoryTextBox.Text += value;
         }
     }
 }

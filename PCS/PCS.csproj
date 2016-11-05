@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +50,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{d41b00e4-7224-4f8e-831b-69e5e89b8f3c}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Operator\Operator.csproj">
+      <Project>{7669426c-fb50-40e4-8751-b359b9de96ce}</Project>
+      <Name>Operator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RemoteInterfaces\RemoteInterfaces.csproj">
+      <Project>{f5ec1dff-b0b7-4a52-84c0-591434ca3faf}</Project>
+      <Name>RemoteInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
