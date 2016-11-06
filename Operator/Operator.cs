@@ -41,7 +41,7 @@ namespace DADSTORM.Operator {
         }
 
         private void send(List<string> tuple) {
-            
+            Routing.Route(downstreamOperators, tuple).send(tuple);
         }
 
         public void run()
