@@ -1,17 +1,17 @@
 ﻿namespace DADSTORM.RemoteInterfaces {
     public interface ICommands
     {
-        void start(string op_id);
+        void start();
 
-        void interval(string op_id, int ms);
+        void interval(int ms);
 
         void status();
 
-        void crash(string process);
+        void crash();
 
-        void freeze(string process);
+        void freeze();
 
-        void unfreeze(string process);
+        void unfreeze();
 
         void wait(int ms);
     }

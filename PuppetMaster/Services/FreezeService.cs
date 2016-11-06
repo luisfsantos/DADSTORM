@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace DADSTORM.PuppetMaster.Services {
     public class FreezeService : PuppetMasterService {
-        private string process;
+        private string OpId;
+        private int Replica;
 
-        public FreezeService(string process) {
-            this.process = process;
+        public FreezeService(string opId, int replica)
+        {
+            this.OpId = opId;
+            this.Replica = replica;
         }
 
         public override void execute() {
-            PuppetMaster.Instance.freeze(process);
+            PuppetMaster.Instance.freeze(OpId);
         }
     }
 }

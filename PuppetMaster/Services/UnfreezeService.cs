@@ -8,16 +8,18 @@ namespace DADSTORM.PuppetMaster.Services
 {
     public class UnfreezeService : PuppetMasterService
     {
-        private string process;
+        private string OpId;
+        private int Replica;
 
-        public UnfreezeService(string process)
+        public UnfreezeService(string opId, int replica)
         {
-            this.process = process;
+            this.OpId = opId;
+            this.Replica = replica;
         }
 
         public override void execute()
         {
-            PuppetMaster.Instance.unfreeze(process);
+            PuppetMaster.Instance.unfreeze(OpId);
         }
     }
 }

@@ -30,14 +30,14 @@ namespace DADSTORM.Operator {
         public Operator(string id, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
             this.Id = id;
             this.Routing = RoutingStrategy.Routing.GetInstance(routing);
-            createWorker(specName, specParams);
             this.Logging = (LoggingLevel) Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics) Enum.Parse(typeof(Semantics), semantics);
+            createWorker(specName, specParams);
             registerAtUpstreamOperators(upstream_addrs);
         }
 
         private void createWorker(string workerName, string[] workerParams) {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void send(List<string> tuple) {
@@ -50,7 +50,7 @@ namespace DADSTORM.Operator {
         }
         
         private void registerAtUpstreamOperators(string [] addresses) {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
     }
 }

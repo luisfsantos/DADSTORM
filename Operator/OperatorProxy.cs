@@ -9,6 +9,12 @@ namespace DADSTORM.Operator
 {
     public class OperatorProxy : MarshalByRefObject, IOperator, ICommands
     {
+        Operator Op;
+
+        public OperatorProxy(Operator op)
+        {
+            this.Op = op;
+        }
 
         #region Operator
         public void addDownstreamOperator()
@@ -18,27 +24,28 @@ namespace DADSTORM.Operator
 
         public void send(List<string> tuple)
         {
-            throw new NotImplementedException();
+
         }
         #endregion
 
         #region MoP Debug
-        public void crash(string process)
+
+        public void crash()
         {
             throw new NotImplementedException();
         }
 
-        public void freeze(string process)
+        public void freeze()
         {
             throw new NotImplementedException();
         }
 
-        public void interval(string op_id, int ms)
+        public void interval(int ms)
         {
             throw new NotImplementedException();
         }
 
-        public void start(string op_id)
+        public void start()
         {
             throw new NotImplementedException();
         }
@@ -48,7 +55,7 @@ namespace DADSTORM.Operator
             throw new NotImplementedException();
         }
 
-        public void unfreeze(string process)
+        public void unfreeze()
         {
             throw new NotImplementedException();
         }
@@ -56,7 +63,8 @@ namespace DADSTORM.Operator
         public void wait(int ms)
         {
             throw new NotImplementedException();
-        }
+        } 
         #endregion
+
     }
 }

@@ -17,6 +17,7 @@ namespace DADSTORM.PCS {
                                     WellKnownObjectMode.Singleton);
             Console.WriteLine("Press anykey to shutdown the Process Creation Service...");
             Console.ReadLine();
+            ChannelServices.UnregisterChannel(channel);
         }
     }
 }

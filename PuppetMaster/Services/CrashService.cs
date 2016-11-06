@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace DADSTORM.PuppetMaster.Services {
     public class CrashService : PuppetMasterService {
-        private string process;
+        private string OpId;
+        private int Replica;
 
-        public CrashService(string process) {
-            this.process = process;
+        public CrashService(string opId, int replica) {
+            this.OpId = opId;
+            this.Replica = replica;
         }
 
         public override void execute() {
-            PuppetMaster.Instance.crash(process);
+            PuppetMaster.Instance.crash(OpId);
         }
 
     }
