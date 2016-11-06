@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DADSTORM.RemoteInterfaces
-{
-    public interface IDebug
-    {
-        void sendInfo(/* FIX ME tuple*/);
+namespace DADSTORM.Operator.RoutingStrategy {
+    public interface Routing {
+
     }
 }

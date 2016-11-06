@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RemoteInterfaces
-{
+﻿namespace DADSTORM.RemoteInterfaces {
     public interface IOperator
     {
         void send(string tuple);
+        void registerAtUpstreamOperators(string[] addresses); 
+        void addDownstreamOperator(/*may have parameters*/);
     }
 }

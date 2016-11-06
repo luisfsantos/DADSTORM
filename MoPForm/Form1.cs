@@ -28,9 +28,7 @@ namespace DADSTORM.MoPForm {
         private void LoadConfigButton_Click(object sender, EventArgs e) {
 
             if (!String.IsNullOrEmpty(configDialog.FileName)) {
-                HistoryTextBox.Text += "I am not initated yet";
                 PuppetMaster.PuppetMaster.Instance.init(configDialog.FileName);
-                HistoryTextBox.Text += "I am become man";
             }
         }
         #endregion

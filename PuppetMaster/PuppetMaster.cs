@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RemoteInterfaces;
+using DADSTORM.RemoteInterfaces;
 using DADSTORM.CommonTypes;
 using DADSTORM.CommonTypes.Parsing;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace DADSTORM.PuppetMaster {
     public class PuppetMaster {
@@ -35,6 +31,7 @@ namespace DADSTORM.PuppetMaster {
 
         public bool init(string pathToFile)
         {
+            //TODO needs exception handling
             #region Parse Config File
             ConfigFileParser parser = new ConfigFileParser(pathToFile);
             Dictionary<string, OperatorData> operatorsData = parser.GetOperatorsData();
@@ -102,7 +99,7 @@ namespace DADSTORM.PuppetMaster {
                 Match match = regex.Match(address);
                 string ip = match.Result("${ip}");
                 List<string> upstream = getUpstream(op.Value.Input_ops, operatorsData);
-                pcs[ip].startProcess(i.ToString(), upstream, op.Value.OperatorSpec, op.Value.Routing, loggingLevel, semantics);
+                pcs[ip].startProcess(i.ToString(), address, upstream, op.Value.OperatorSpec, op.Value.Routing, loggingLevel, semantics);
                 i++;
             }
         }

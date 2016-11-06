@@ -1,24 +1,23 @@
-﻿using RemoteInterfaces;
+﻿using DADSTORM.RemoteInterfaces;
 using System;
 using DADSTORM.CommonTypes;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace PCS
-{
+namespace DADSTORM.PCS {
     class PCSProxy : MarshalByRefObject, IPCS
     {
 
-        public void startProcess(string id, List<string> upstreams, OperatorSpecification specs, string routing, LoggingLevel level, Semantics semantics)
+        public void startProcess(string id, string address, List<string> upstreams, OperatorSpecification specs, string routing, LoggingLevel logging, Semantics semantics)
         {
             Process process = new Process();
-            process.StartInfo.FileName = "Operator.exe";
+            process.StartInfo.FileName = Operator.Operator.PROGRAM_NAME;
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("{0} [{1}] ", id, String.Join(",", upstreams));
+            sb.AppendFormat("{0} {1} [{2}] ", id, address, String.Join(",", upstreams));
             sb.AppendFormat("{0} [{1}] ", specs.Name, String.Join(",", specs.Params));
             sb.AppendFormat("{0} ", routing);
-            sb.AppendFormat("{0} {1}", level, semantics);
+            sb.AppendFormat("{0} {1}", logging, semantics);
             process.StartInfo.Arguments = sb.ToString();
             process.Start();
         }

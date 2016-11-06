@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoPForm", "MoPForm\MoPForm.csproj", "{5E627B14-C971-4753-9867-1E3D84C0151D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCS", "PCS\PCS.csproj", "{F7BB6E63-F1FE-4F4B-AE22-6231B2F80D94}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7669426C-FB50-40E4-8751-B359B9DE96CE} = {7669426C-FB50-40E4-8751-B359B9DE96CE}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteInterfaces", "RemoteInterfaces\RemoteInterfaces.csproj", "{F5EC1DFF-B0B7-4A52-84C0-591434CA3FAF}"
 EndProject

@@ -213,7 +213,7 @@ namespace DADSTORM.CommonTypes.Parsing {
 
             //Console.WriteLine("\n...Sorting...\n");
 
-            int[] sortOrder = TopologicalSorter.getTopologicalSortOrder(fields);
+            /*int[] sortOrder = */ TopologicalSorter.getTopologicalSortOrder(fields);
 
             //for (int i = 0; i < sortOrder.Length; i++) {
             //    var field = fields[sortOrder[i]];
