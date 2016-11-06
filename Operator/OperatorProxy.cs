@@ -17,9 +17,10 @@ namespace DADSTORM.Operator
         }
 
         #region Operator
-        public void addDownstreamOperator()
+        public void addDownstreamOperator(string address)
         {
-            throw new NotImplementedException();
+            IOperator downstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
+            Op.addDownstreamOperator(downstream);
         }
 
         public void send(List<string> tuple)

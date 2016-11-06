@@ -5,6 +5,7 @@ using DADSTORM.Operator.OperatorWorkers;
 using DADSTORM.Operator.RoutingStrategy;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 
 namespace DADSTORM.Operator {
 
@@ -14,24 +15,25 @@ namespace DADSTORM.Operator {
         private bool started = false;
         private int waittime = 0;
 
-        public string Id { get; set; }
-        public OperatorWorker Worker { get; set; }
-        public string[] SpecParams { get; set; }
-        public Routing Routing { get; set; }
-        public LoggingLevel Logging { get; set; }
-        public Semantics Semantics { get; set; }
-
+        public string Id { get; private set; }
+        public string Address { get; private set; }
+        public OperatorWorker Worker { get; private set; }
+        public string[] SpecParams { get; private set; }
+        public Routing Routing { get; private set; }
+        public LoggingLevel Logging { get; private set; }
+        public Semantics Semantics { get; private set; }
+        
         private List<IOperator> downstreamOperators = new List<IOperator>();
 
         private ConcurrentQueue<List<string>> inputStream = new ConcurrentQueue<List<string>>();
         private ConcurrentQueue<List<string>> outputStream = new ConcurrentQueue<List<string>>(); //TODO check if it necessary to maintain output stream
 
 
-        public Operator(string id, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+        public Operator(string id, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
             this.Id = id;
             this.Routing = RoutingStrategy.Routing.GetInstance(routing);
-            this.Logging = (LoggingLevel) Enum.Parse(typeof(LoggingLevel), logging);
-            this.Semantics = (Semantics) Enum.Parse(typeof(Semantics), semantics);
+            this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
+            this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
             registerAtUpstreamOperators(upstream_addrs);
         }
@@ -44,13 +46,27 @@ namespace DADSTORM.Operator {
             Routing.Route(downstreamOperators, tuple).send(tuple);
         }
 
-        public void run()
-        {
+        public void addDownstreamOperator(IOperator op) {
+            downstreamOperators.Add(op);
+        }
+
+        public void run() {
 
         }
-        
-        private void registerAtUpstreamOperators(string [] addresses) {
-           // throw new NotImplementedException();
+
+        private void registerAtUpstreamOperators(string[] addresses) {
+            string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";
+            Regex regex = new Regex(pattern);
+
+            foreach (string address in addresses) {
+                if (regex.IsMatch(address)) {
+                    IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
+                    upstream.addDownstreamOperator(Address);
+                } else {
+                    //FIXME need to handle the case when the address is actually a filename
+                }
+
+            }
         }
     }
 }

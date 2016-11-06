@@ -54,14 +54,14 @@ namespace MoPConsole
                         break;
                     case Command.CRASH:
                         if (result.Count == Command.ONEINPUT) {
-                            new CrashService(result[1]).assyncexecute();
+                            new CrashService(result[1], Int32.Parse(result[2])).assyncexecute();
                         } else {
                             goto default;
                         }
                         break;
                     case Command.FREEZE:
                         if (result.Count == Command.ONEINPUT) {
-                            new FreezeService(result[1]).assyncexecute();
+                            new FreezeService(result[1], Int32.Parse(result[2])).assyncexecute();
                         } else {
                             goto default;
                         }
