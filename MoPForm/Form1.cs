@@ -29,6 +29,7 @@ namespace DADSTORM.MoPForm {
 
             if (!String.IsNullOrEmpty(configDialog.FileName)) {
                 PuppetMaster.PuppetMaster.Instance.init(configDialog.FileName);
+                ConfigGroup.Enabled = false;
             }
         }
         #endregion

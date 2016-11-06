@@ -25,9 +25,9 @@
         private void InitializeComponent() {
             this.ConfigBrowseButton = new System.Windows.Forms.Button();
             this.ConfigFileTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ConfigGroup = new System.Windows.Forms.GroupBox();
             this.LoadConfigButton = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ScriptGroup = new System.Windows.Forms.GroupBox();
             this.RunAllButton = new System.Windows.Forms.Button();
             this.RunNextButton = new System.Windows.Forms.Button();
             this.LoadScriptButton = new System.Windows.Forms.Button();
@@ -62,8 +62,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.StartOpIdTextBox = new System.Windows.Forms.TextBox();
             this.HistoryTextBox = new System.Windows.Forms.RichTextBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.ConfigGroup.SuspendLayout();
+            this.ScriptGroup.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,17 +84,17 @@
             this.ConfigFileTextBox.Size = new System.Drawing.Size(300, 20);
             this.ConfigFileTextBox.TabIndex = 1;
             // 
-            // groupBox1
+            // ConfigGroup
             // 
-            this.groupBox1.Controls.Add(this.LoadConfigButton);
-            this.groupBox1.Controls.Add(this.ConfigFileTextBox);
-            this.groupBox1.Controls.Add(this.ConfigBrowseButton);
-            this.groupBox1.Location = new System.Drawing.Point(29, 21);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(530, 79);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Configuration File";
+            this.ConfigGroup.Controls.Add(this.LoadConfigButton);
+            this.ConfigGroup.Controls.Add(this.ConfigFileTextBox);
+            this.ConfigGroup.Controls.Add(this.ConfigBrowseButton);
+            this.ConfigGroup.Location = new System.Drawing.Point(29, 21);
+            this.ConfigGroup.Name = "ConfigGroup";
+            this.ConfigGroup.Size = new System.Drawing.Size(530, 79);
+            this.ConfigGroup.TabIndex = 5;
+            this.ConfigGroup.TabStop = false;
+            this.ConfigGroup.Text = "Configuration File";
             // 
             // LoadConfigButton
             // 
@@ -106,19 +106,19 @@
             this.LoadConfigButton.UseVisualStyleBackColor = true;
             this.LoadConfigButton.Click += new System.EventHandler(this.LoadConfigButton_Click);
             // 
-            // groupBox2
+            // ScriptGroup
             // 
-            this.groupBox2.Controls.Add(this.RunAllButton);
-            this.groupBox2.Controls.Add(this.RunNextButton);
-            this.groupBox2.Controls.Add(this.LoadScriptButton);
-            this.groupBox2.Controls.Add(this.ScriptFileTextBox);
-            this.groupBox2.Controls.Add(this.ScriptBrowseButton);
-            this.groupBox2.Location = new System.Drawing.Point(29, 117);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(530, 115);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Script File";
+            this.ScriptGroup.Controls.Add(this.RunAllButton);
+            this.ScriptGroup.Controls.Add(this.RunNextButton);
+            this.ScriptGroup.Controls.Add(this.LoadScriptButton);
+            this.ScriptGroup.Controls.Add(this.ScriptFileTextBox);
+            this.ScriptGroup.Controls.Add(this.ScriptBrowseButton);
+            this.ScriptGroup.Location = new System.Drawing.Point(29, 117);
+            this.ScriptGroup.Name = "ScriptGroup";
+            this.ScriptGroup.Size = new System.Drawing.Size(530, 115);
+            this.ScriptGroup.TabIndex = 6;
+            this.ScriptGroup.TabStop = false;
+            this.ScriptGroup.Text = "Script File";
             // 
             // RunAllButton
             // 
@@ -451,14 +451,17 @@
             this.ClientSize = new System.Drawing.Size(589, 754);
             this.Controls.Add(this.HistoryTextBox);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.ScriptGroup);
+            this.Controls.Add(this.ConfigGroup);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(605, 793);
+            this.MinimumSize = new System.Drawing.Size(605, 793);
             this.Name = "Dadform";
             this.Text = "DADSTORM";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.ConfigGroup.ResumeLayout(false);
+            this.ConfigGroup.PerformLayout();
+            this.ScriptGroup.ResumeLayout(false);
+            this.ScriptGroup.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
@@ -469,9 +472,9 @@
 
         private System.Windows.Forms.Button ConfigBrowseButton;
         private System.Windows.Forms.TextBox ConfigFileTextBox;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox ConfigGroup;
         private System.Windows.Forms.Button LoadConfigButton;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox ScriptGroup;
         private System.Windows.Forms.Button LoadScriptButton;
         private System.Windows.Forms.TextBox ScriptFileTextBox;
         private System.Windows.Forms.Button ScriptBrowseButton;
