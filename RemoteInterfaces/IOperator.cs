@@ -1,8 +1,9 @@
-﻿namespace DADSTORM.RemoteInterfaces {
+﻿using System.Collections.Generic;
+
+namespace DADSTORM.RemoteInterfaces {
     public interface IOperator
     {
-        void send(string tuple);
-        void registerAtUpstreamOperators(string[] addresses); 
+        void send(List<string> tuple);
         void addDownstreamOperator(/*may have parameters*/);
     }
 }

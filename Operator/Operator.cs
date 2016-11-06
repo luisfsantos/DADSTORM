@@ -3,30 +3,16 @@ using DADSTORM.RemoteInterfaces;
 using DADSTORM.CommonTypes;
 using DADSTORM.Operator.OperatorWorkers;
 using DADSTORM.Operator.RoutingStrategy;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace DADSTORM.Operator {
 
-    public class Operator : IOperator {
-        public static readonly string PROGRAM_NAME = "Operator.exe";
+    public class Operator {
 
-
-        public Operator(string id, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
-            this.Id = id;
-            defineRouting(routing);
-            createWorker(specName, specParams);
-            this.Logging = (LoggingLevel) Enum.Parse(typeof(LoggingLevel), logging);
-            this.Semantics = (Semantics) Enum.Parse(typeof(Semantics), semantics);
-            registerAtUpstreamOperators(upstream_addrs);
-        }
-
-
-        private void defineRouting(string routing) {
-            throw new NotImplementedException();
-        }
-
-        private void createWorker(string workerName, string[] workerParams) {
-            throw new NotImplementedException();
-        }
+        private bool frozen = false;
+        private bool started = false;
+        private int waittime = 0;
 
         public string Id { get; set; }
         public OperatorWorker Worker { get; set; }
@@ -35,17 +21,35 @@ namespace DADSTORM.Operator {
         public LoggingLevel Logging { get; set; }
         public Semantics Semantics { get; set; }
 
+        private List<IOperator> downstreamOperators = new List<IOperator>();
 
-        public void send(string tuple) {
+        private ConcurrentQueue<List<string>> inputStream = new ConcurrentQueue<List<string>>();
+        private ConcurrentQueue<List<string>> outputStream = new ConcurrentQueue<List<string>>(); //TODO check if it necessary to maintain output stream
+
+
+        public Operator(string id, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+            this.Id = id;
+            this.Routing = RoutingStrategy.Routing.GetInstance(routing);
+            createWorker(specName, specParams);
+            this.Logging = (LoggingLevel) Enum.Parse(typeof(LoggingLevel), logging);
+            this.Semantics = (Semantics) Enum.Parse(typeof(Semantics), semantics);
+            registerAtUpstreamOperators(upstream_addrs);
+        }
+
+        private void createWorker(string workerName, string[] workerParams) {
             throw new NotImplementedException();
         }
 
+        private void send(List<string> tuple) {
+            
+        }
+
+        public void run()
+        {
+
+        }
         
-        public void registerAtUpstreamOperators(string [] addresses) {
-            throw new NotImplementedException();
-        }
-
-        public void addDownstreamOperator() {
+        private void registerAtUpstreamOperators(string [] addresses) {
             throw new NotImplementedException();
         }
     }
