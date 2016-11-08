@@ -20,6 +20,7 @@ namespace DADSTORM.Operator {
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
         public Routing Routing { get; private set; }
+
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
         
@@ -43,11 +44,22 @@ namespace DADSTORM.Operator {
         }
 
         private void send(List<string> tuple) {
+            //Need to fix this to always send what is on the queue
             Routing.Route(downstreamOperators, tuple).send(tuple);
         }
 
-        public void addDownstreamOperator(IOperator op) {
+        internal void addToSend(List<string> tuple)
+        {
+            outputStream.Enqueue(tuple);
+        }
+
+        internal void addDownstreamOperator(IOperator op) {
             downstreamOperators.Add(op);
+        }
+
+        internal void addTuple(List<string> tuple)
+        {
+            inputStream.Enqueue(tuple);
         }
 
         public void run() {
