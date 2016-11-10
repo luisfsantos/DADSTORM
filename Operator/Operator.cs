@@ -29,8 +29,9 @@ namespace DADSTORM.Operator {
         
         private List<IOperator> downstreamOperators = new List<IOperator>();
 
-        internal ConcurrentQueue<List<string>> inputStream = new ConcurrentQueue<List<string>>();
-        private ConcurrentQueue<List<string>> outputStream = new ConcurrentQueue<List<string>>(); //TODO check if it necessary to maintain output stream
+        internal BlockingCollection<List<string>> inputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
+        private BlockingCollection<List<string>> outputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
+
 
 
         public Operator(int replIndex, int replTotal, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
@@ -45,28 +46,41 @@ namespace DADSTORM.Operator {
 
         private void createWorker(string workerName, string[] workerParams) {
             //throw new NotImplementedException();
+            switch (workerName) {
+                case "UNIQ":
+                    Worker = new UniqueWorker(this, Int32.Parse(workerParams[0]));
+                    break;
+                default:
+                    Console.WriteLine("default");
+                    break;
+            }
         }
 
         private void send() {
             List<string> tupleToSend;
             while (true) {
-                outputStream.TryDequeue(out tupleToSend);
-                Routing.Route(downstreamOperators, tupleToSend).send(tupleToSend);
+                tupleToSend = outputStream.Take();
+                //Routing.Route(downstreamOperators, tupleToSend).send(tupleToSend);
+                Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
             }
         }
 
-        internal void addToSend(List<string> tuple)
+        internal void addTupleToSend(List<string> tuple)
         {
-            outputStream.Enqueue(tuple);
+            outputStream.Add(tuple);
         }
 
         internal void addDownstreamOperator(IOperator op) {
             downstreamOperators.Add(op);
         }
 
-        internal void addToProcess(List<string> tuple)
+        internal void addTupleToProcess(List<string> tuple)
         {
-            inputStream.Enqueue(tuple);
+            inputStream.Add(tuple);
+        }
+
+        internal List<string> getTupleToProcess() {
+            return inputStream.Take();
         }
 
         public void run() {
@@ -88,9 +102,9 @@ namespace DADSTORM.Operator {
                     upstream.addDownstreamOperator(Address);
                 } else {
                     //FIXME need to handle the case when the address is actually a filename
-                    TuplesReader tuplesReader = new TuplesReader(address, ReplIndex, ReplTotal);
-                    Thread tuplesReaderThread = new Thread(() => tuplesReader.read(ref inputStream));
-                    tuplesReaderThread.IsBackground = true;
+                    TuplesReader tuplesReader = new TuplesReader(this, address, ReplIndex, ReplTotal);
+                    Thread tuplesReaderThread = new Thread(tuplesReader.read);
+                    //tuplesReaderThread.IsBackground = true;
                     tuplesReaderThread.Start();
                 }
 

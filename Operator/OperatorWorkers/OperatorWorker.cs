@@ -13,7 +13,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
         public void execute() {
             List<string> tupleToProcess;
             while(true) {
-                Op.inputStream.TryDequeue(out tupleToProcess);
+                tupleToProcess = Op.getTupleToProcess();
                 processTuple(tupleToProcess);
             }
         }

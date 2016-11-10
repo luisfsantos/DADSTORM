@@ -24,7 +24,7 @@ namespace DADSTORM.Operator.OperatorWorkers
             if(!UniqueField.Contains(tuple[Field]))
             {
                 UniqueField.Add(tuple[Field]);
-                Op.addToSend(tuple);
+                Op.addTupleToSend(tuple);
             }
         }
     }

@@ -4,24 +4,26 @@ using System.IO;
 
 namespace DADSTORM.Operator.FileReader {
     class TuplesReader {
+        private Operator op;
         private string path;
         private int replicaId;
         private int replicaTotal;
         public List<List<string>> ReadTuples { get; private set; }
 
-        public TuplesReader(string path, int replicaId, int replicaTotal) {
+        public TuplesReader(Operator op, string path, int replicaId, int replicaTotal) {
+            this.op = op;
             this.path = path;
             this.replicaId = replicaId;
             this.replicaTotal = replicaTotal;   
         }
 
-        public void read(ref ConcurrentQueue<List<string>> outputTo) {
+        public void read() {
 
             string [] lines = File.ReadAllLines(path);
             foreach (string line in lines) {
                 if (line.StartsWith("%%"))
                     continue;
-                outputTo.Enqueue(makeTuple(line));
+                op.addTupleToProcess(makeTuple(line));
             }
             
         }
