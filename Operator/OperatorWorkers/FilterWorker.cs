@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DADSTORM.Operator.OperatorWorkers
 {
-    class FilterOperator
+    class FilterWorker
     {
     }
 }

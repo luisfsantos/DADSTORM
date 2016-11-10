@@ -6,6 +6,7 @@ using DADSTORM.Operator.RoutingStrategy;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace DADSTORM.Operator {
 
@@ -26,7 +27,7 @@ namespace DADSTORM.Operator {
         
         private List<IOperator> downstreamOperators = new List<IOperator>();
 
-        private ConcurrentQueue<List<string>> inputStream = new ConcurrentQueue<List<string>>();
+        internal ConcurrentQueue<List<string>> inputStream = new ConcurrentQueue<List<string>>();
         private ConcurrentQueue<List<string>> outputStream = new ConcurrentQueue<List<string>>(); //TODO check if it necessary to maintain output stream
 
 
@@ -43,9 +44,12 @@ namespace DADSTORM.Operator {
             //throw new NotImplementedException();
         }
 
-        private void send(List<string> tuple) {
-            //Need to fix this to always send what is on the queue
-            Routing.Route(downstreamOperators, tuple).send(tuple);
+        private void send() {
+            List<string> tupleToSend;
+            while (true) {
+                outputStream.TryDequeue(out tupleToSend);
+                Routing.Route(downstreamOperators, tupleToSend).send(tupleToSend);
+            }
         }
 
         internal void addToSend(List<string> tuple)
@@ -57,12 +61,17 @@ namespace DADSTORM.Operator {
             downstreamOperators.Add(op);
         }
 
-        internal void addTuple(List<string> tuple)
+        internal void addToProcess(List<string> tuple)
         {
             inputStream.Enqueue(tuple);
         }
 
         public void run() {
+            Thread processThread = new Thread(Worker.execute);
+            processThread.Start();
+
+            Thread sendThread = new Thread(send);
+            sendThread.Start();
 
         }
 

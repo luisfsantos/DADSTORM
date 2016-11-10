@@ -29,6 +29,7 @@ namespace DADSTORM.Operator {
 
             Operator Op = new Operator(id, address, upstream_addrs, specName, specParams, routing, logging, semantics);
             OperatorProxy OpProxy = new OperatorProxy(Op);
+            Op.run();
 
             RemotingServices.Marshal(OpProxy,"op",
                                     typeof(OperatorProxy));

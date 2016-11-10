@@ -18,18 +18,13 @@ namespace DADSTORM.Operator.OperatorWorkers
             this.Field = field;
         }
 
-        public override void execute()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void processTuple(List<string> tuple)
         {
             //FIXME checkSize(tuple);
             if(!UniqueField.Contains(tuple[Field]))
             {
                 UniqueField.Add(tuple[Field]);
-                Op.send(tuple);
+                Op.addToSend(tuple);
             }
         }
     }

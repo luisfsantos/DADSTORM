@@ -25,7 +25,7 @@ namespace DADSTORM.Operator
 
         public void send(List<string> tuple)
         {
-            Op.addTuple(tuple);
+            Op.addToProcess(tuple);
         }
         #endregion
 

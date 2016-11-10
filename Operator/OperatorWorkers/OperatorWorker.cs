@@ -10,7 +10,14 @@ namespace DADSTORM.Operator.OperatorWorkers {
             this.Op = op;
         }
 
-        public abstract void execute();
+        public void execute() {
+            List<string> tupleToProcess;
+            while(true) {
+                Op.inputStream.TryDequeue(out tupleToProcess);
+                processTuple(tupleToProcess);
+            }
+        }
+
         public abstract void processTuple(List<string> tuple);
     }
 }
