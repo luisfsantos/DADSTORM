@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Threading;
+using DADSTORM.Operator.FileReader;
 
 namespace DADSTORM.Operator {
 
@@ -16,7 +17,8 @@ namespace DADSTORM.Operator {
         private bool started = false;
         private int waittime = 0;
 
-        public string Id { get; private set; }
+        public int ReplIndex { get; private set; }
+        public int ReplTotal { get; private set; }
         public string Address { get; private set; }
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
@@ -31,8 +33,9 @@ namespace DADSTORM.Operator {
         private ConcurrentQueue<List<string>> outputStream = new ConcurrentQueue<List<string>>(); //TODO check if it necessary to maintain output stream
 
 
-        public Operator(string id, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
-            this.Id = id;
+        public Operator(int replIndex, int replTotal, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+            this.ReplIndex = replIndex;
+            this.ReplTotal = replTotal;
             this.Routing = RoutingStrategy.Routing.GetInstance(routing);
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
@@ -85,6 +88,10 @@ namespace DADSTORM.Operator {
                     upstream.addDownstreamOperator(Address);
                 } else {
                     //FIXME need to handle the case when the address is actually a filename
+                    TuplesReader tuplesReader = new TuplesReader(address, ReplIndex, ReplTotal);
+                    Thread tuplesReaderThread = new Thread(() => tuplesReader.read(ref inputStream));
+                    tuplesReaderThread.IsBackground = true;
+                    tuplesReaderThread.Start();
                 }
 
             }
