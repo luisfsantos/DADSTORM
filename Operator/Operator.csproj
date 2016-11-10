@@ -53,10 +53,10 @@
   <ItemGroup>
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorProxy.cs" />
-    <Compile Include="OperatorWorkers\CountOperator.cs" />
-    <Compile Include="OperatorWorkers\CustomOperator.cs" />
-    <Compile Include="OperatorWorkers\DupOperator.cs" />
-    <Compile Include="OperatorWorkers\FilterOperator.cs" />
+    <Compile Include="OperatorWorkers\CountWorker.cs" />
+    <Compile Include="OperatorWorkers\CustomWorker.cs" />
+    <Compile Include="OperatorWorkers\DupWorker.cs" />
+    <Compile Include="OperatorWorkers\FilterWorker.cs" />
     <Compile Include="OperatorWorkers\OperatorWorker.cs" />
     <Compile Include="OperatorWorkers\UniqueWorker.cs" />
     <Compile Include="Program.cs" />
