@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DADSTORM.CommonTypes;
 
 namespace DADSTORM.PuppetMaster.Services {
     public class FreezeService : PuppetMasterService {
-        private string OpId;
+        private string OpID;
         private int Replica;
 
         public FreezeService(string opId, int replica)
         {
-            this.OpId = opId;
+            this.OpID = opId;
             this.Replica = replica;
         }
 
         public override void execute() {
-            PuppetMaster.Instance.GetReplica(OpId, Replica).freeze();
+            PuppetMaster.Instance.GetReplica(OpID, Replica).freeze();
+            PuppetMaster.Instance.logger.notify(Command.FREEZE, new string[] { OpID, Replica.ToString() });
         }
     }
 }

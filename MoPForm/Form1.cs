@@ -4,6 +4,7 @@ using DADSTORM.PuppetMaster.Services;
 using DADSTORM.CommonTypes.Parsing;
 using System.Collections.Generic;
 using System.Threading;
+using DADSTORM.CommonTypes;
 
 namespace DADSTORM.MoPForm {
     public partial class Dadform : Form {
@@ -33,6 +34,7 @@ namespace DADSTORM.MoPForm {
 
             if (!String.IsNullOrEmpty(configDialog.FileName)) {
                 PuppetMaster.PuppetMaster.Instance.init(configDialog.FileName);
+                PuppetMaster.PuppetMaster.Instance.setLoggerOutputDestination(new PuppetMaster.DelegateUpdateInfo(PrintToHistory));
                 ConfigGroup.Enabled = false;
                 CommandsGroup.Enabled = true;
                 ScriptGroup.Enabled = true;
@@ -158,17 +160,7 @@ namespace DADSTORM.MoPForm {
                 this.Invoke(new Action<string>(PrintToHistory), new object[] { value });
                 return;
             }
-            HistoryTextBox.Text += value;
+            HistoryTextBox.Text += value + "\n";
         }
-    }
-
-    class Command {
-        public const string START = "Start";
-        public const string INTERVAL = "Interval";
-        public const string STATUS = "Status";
-        public const string CRASH = "Crash";
-        public const string FREEZE = "Freeze";
-        public const string UNFREEZE = "Unfreeze";
-        public const string WAIT = "Wait";
     }
 }

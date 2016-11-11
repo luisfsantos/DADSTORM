@@ -1,17 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DADSTORM.RemoteInterfaces;
+using System.Windows.Forms;
 
-namespace DADSTORM.PuppetMaster
-{
+namespace DADSTORM.PuppetMaster {
     [Serializable]
     public class MoPProxy : MarshalByRefObject, ILogger
     {
+        DelegateUpdateInfo updateHistory;
         public void sendInfo(string OpAddress, List<string> tuple) {
-            PuppetMaster.Log.Debug("tuple " + OpAddress + ", " + String.Join(" ", tuple.ToArray()));
+            string output = "tuple " + OpAddress + ", <" + String.Join(", ", tuple.ToArray()) + ">";
+            PuppetMaster.Log.Debug(output);
+            Form.ActiveForm.Invoke(updateHistory, new object[] { output });
+        }
+
+        public void notify(string name, string[] param) {
+            string output = name + " " + String.Join(" ", param);
+            PuppetMaster.Log.Debug(output);
+            Form.ActiveForm.Invoke(updateHistory, new object[] { output });
+
+        }
+
+        internal void addDelegateUpdateInfo(DelegateUpdateInfo del) {
+            updateHistory = del;
         }
     }
 }
