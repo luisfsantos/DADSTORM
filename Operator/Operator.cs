@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using DADSTORM.Operator.FileReader;
 using DADSTORM.Operator.Logger;
+using System.Net.Sockets;
 
 namespace DADSTORM.Operator {
 
@@ -87,9 +88,13 @@ namespace DADSTORM.Operator {
                 if (Logging.Equals(LoggingLevel.Full)) Logger.sendInfo(MyAddress, tupleToSend);
                 #endregion
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
-                    downstreamRouting[downstreamPair.Key]
-                        .Route(downstreamPair.Value, tupleToSend)
-                        .send(tupleToSend);
+                    try {
+                        downstreamRouting[downstreamPair.Key]
+                       .Route(downstreamPair.Value, tupleToSend)
+                       .send(tupleToSend);
+                    } catch (SocketException e) {
+                        //TODO: Error checking and verify if it should be removed from Downstream
+                    }
                 }
                 if (downstreamOperators.Count == 0) {
                     sendToOutputOperator(tupleToSend);
