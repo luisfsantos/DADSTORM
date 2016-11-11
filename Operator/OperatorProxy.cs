@@ -1,6 +1,7 @@
 ﻿using DADSTORM.RemoteInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace DADSTORM.Operator
     public class OperatorProxy : MarshalByRefObject, IOperator, ICommands
     {
         Operator Op;
+        private bool started = false;
 
         public OperatorProxy(Operator op)
         {
@@ -33,12 +35,12 @@ namespace DADSTORM.Operator
 
         public void crash()
         {
-            throw new NotImplementedException();
+            Process.GetCurrentProcess().Kill();
         }
 
         public void freeze()
         {
-            throw new NotImplementedException();
+            Op.freeze();
         }
 
         public void interval(int ms)
@@ -48,7 +50,11 @@ namespace DADSTORM.Operator
 
         public void start()
         {
-            throw new NotImplementedException();
+            if (!started) {
+                Op.run();
+                started = true;
+            }
+            
         }
 
         public void status()
@@ -58,13 +64,8 @@ namespace DADSTORM.Operator
 
         public void unfreeze()
         {
-            throw new NotImplementedException();
+            Op.unfreeze();
         }
-
-        public void wait(int ms)
-        {
-            throw new NotImplementedException();
-        } 
         #endregion
 
     }

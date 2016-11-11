@@ -29,6 +29,24 @@ namespace DADSTORM.PuppetMaster {
             }
         }
 
+        public ICommands GetReplica(string operatorID, int replica) {
+            List<ICommands> result;
+            if (operators.TryGetValue(operatorID, out result)) {
+                return result[replica];
+            } else {
+                return null;
+            }
+        }
+
+        public List<ICommands> GetOperator(string operatorID) {
+            List<ICommands> result;
+            if (operators.TryGetValue(operatorID, out result)) {
+                return result;
+            } else {
+                return null;
+            }
+        }
+
         public bool init(string pathToFile)
         {
             //TODO needs exception handling

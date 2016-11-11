@@ -13,9 +13,9 @@ namespace DADSTORM.Operator {
 
     public class Operator {
 
-        private bool frozen = false;
-        private bool started = false;
-        private int waittime = 0;
+        private bool Frozen = false;
+        internal int WaitTime { get; private set; }  = 0;
+        internal bool HasInterval { get; private set; } = false;
 
         public int ReplIndex { get; private set; }
         public int ReplTotal { get; private set; }
@@ -26,6 +26,8 @@ namespace DADSTORM.Operator {
 
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
+
+        private List<Thread> WorkingThreads = new List<Thread>();
         
         private List<IOperator> downstreamOperators = new List<IOperator>();
 
@@ -69,6 +71,7 @@ namespace DADSTORM.Operator {
         private void send() {
             List<string> tupleToSend;
             while (true) {
+                if (HasInterval) Thread.Sleep(WaitTime);
                 tupleToSend = outputStream.Take();
                 //Routing.Route(downstreamOperators, tupleToSend).send(tupleToSend);
                 Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
@@ -93,14 +96,40 @@ namespace DADSTORM.Operator {
             return inputStream.Take();
         }
 
+        #region Commands
+
         public void run() {
             Thread processThread = new Thread(Worker.execute);
+            WorkingThreads.Add(processThread);
             processThread.Start();
 
             Thread sendThread = new Thread(send);
+            WorkingThreads.Add(sendThread);
             sendThread.Start();
-
         }
+
+        internal void freeze() {
+            foreach(Thread thread in WorkingThreads) {
+                thread.Suspend();
+            }
+        }
+
+        internal void unfreeze() {
+            foreach (Thread thread in WorkingThreads) {
+                thread.Resume();
+            }
+        }
+
+        internal void interval(int ms) {
+            if (ms <= 0) {
+                HasInterval = false;
+            } else {
+                HasInterval = true;
+                WaitTime = ms;
+            }
+        }
+
+        #endregion
 
         private void registerAtUpstreamOperators(string[] addresses) {
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";

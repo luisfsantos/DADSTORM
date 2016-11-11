@@ -12,7 +12,5 @@
         void freeze();
 
         void unfreeze();
-
-        void wait(int ms);
     }
 }

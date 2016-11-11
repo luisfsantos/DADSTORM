@@ -31,7 +31,7 @@ namespace DADSTORM.Operator {
 
             Operator Op = new Operator(Int32.Parse(replIndex), Int32.Parse(replTotal), address, upstream_addrs, specName, specParams, routing, logging, semantics);
             OperatorProxy OpProxy = new OperatorProxy(Op);
-            Op.run();
+            //TODO done in the PuppetMaster Op.run();
 
             RemotingServices.Marshal(OpProxy,"op",
                                     typeof(OperatorProxy));

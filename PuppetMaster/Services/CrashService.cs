@@ -15,7 +15,7 @@ namespace DADSTORM.PuppetMaster.Services {
         }
 
         public override void execute() {
-            PuppetMaster.Instance.crash(OpId);
+            PuppetMaster.Instance.GetReplica(OpId, Replica).crash();
         }
 
     }

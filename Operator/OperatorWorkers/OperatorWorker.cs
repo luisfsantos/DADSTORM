@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace DADSTORM.Operator.OperatorWorkers {
     public abstract class OperatorWorker {
@@ -13,6 +14,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
         public void execute() {
             List<string> tupleToProcess;
             while(true) {
+                if (Op.HasInterval) Thread.Sleep(Op.WaitTime);
                 tupleToProcess = Op.getTupleToProcess();
                 processTuple(tupleToProcess);
             }
