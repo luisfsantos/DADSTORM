@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="FileReader\TuplesReader.cs" />
     <Compile Include="Logger\LocalLogger.cs" />
+    <Compile Include="MetaData\Status.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorProxy.cs" />
     <Compile Include="OperatorWorkers\CountWorker.cs" />

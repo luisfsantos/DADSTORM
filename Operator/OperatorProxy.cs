@@ -61,7 +61,7 @@ namespace DADSTORM.Operator
 
         public void status()
         {
-            throw new NotImplementedException();
+            Console.WriteLine(Op.CurrentStatus.ConstructStatus());
         }
 
         public void unfreeze()

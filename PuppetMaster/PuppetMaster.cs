@@ -50,6 +50,14 @@ namespace DADSTORM.PuppetMaster {
             }
         }
 
+        public List<ICommands> GetAllOperators() {
+            List<ICommands> result = new List<ICommands>();
+            foreach(List<ICommands> replicas in operators.Values) {
+                result.AddRange(replicas);
+            }
+            return result;
+        }
+
         public bool init(string pathToFile)
         {
             //TODO needs exception handling

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DADSTORM.RemoteInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,10 @@ namespace DADSTORM.PuppetMaster.Services
     {
         public override void execute()
         {
-            
+            List<ICommands> allReplicas = PuppetMaster.Instance.GetAllOperators();
+            foreach (ICommands replica in allReplicas) {
+                replica.status();
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace DADSTORM.RemoteInterfaces {
 
     public class PCSConstants
     {
-        public static readonly int PORT = 11050;
+        public static readonly int PORT = 11000;
         public static readonly string NAME = "PCS";
     }
 }

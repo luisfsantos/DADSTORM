@@ -10,6 +10,7 @@ using System.Threading;
 using DADSTORM.Operator.FileReader;
 using DADSTORM.Operator.Logger;
 using System.Net.Sockets;
+using DADSTORM.Operator.MetaData;
 
 namespace DADSTORM.Operator {
 
@@ -18,6 +19,8 @@ namespace DADSTORM.Operator {
         internal int WaitTime { get; private set; }  = 0;
         internal bool HasInterval { get; private set; } = false;
         internal ManualResetEvent Frozen { get; private set; } = new ManualResetEvent(true);
+
+        internal Status CurrentStatus;
 
 
         public string OperatorID { get; private set; }
@@ -48,6 +51,7 @@ namespace DADSTORM.Operator {
             this.ReplIndex = replIndex;
             this.ReplTotal = replTotal;
             this.MyAddress = address;
+            CurrentStatus = new Status(address);
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
@@ -92,7 +96,9 @@ namespace DADSTORM.Operator {
                         downstreamRouting[downstreamPair.Key]
                        .Route(downstreamPair.Value, tupleToSend)
                        .send(tupleToSend);
+                        CurrentStatus.TupleSent();
                     } catch (SocketException e) {
+                        CurrentStatus.PresumedDead(downstreamPair.Key);
                         //TODO: Error checking and verify if it should be removed from Downstream
                     }
                 }
@@ -126,6 +132,7 @@ namespace DADSTORM.Operator {
         internal void addTupleToProcess(List<string> tuple)
         {
             inputStream.Add(tuple);
+            CurrentStatus.TupleRecieved();
         }
 
         internal List<string> getTupleToProcess() {
