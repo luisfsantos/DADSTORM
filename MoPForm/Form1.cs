@@ -55,6 +55,8 @@ namespace DADSTORM.MoPForm {
             if (!String.IsNullOrEmpty(scriptDialog.FileName)) {
                 parser = new ScriptFileParser(scriptDialog.FileName);
                 parser.parse();
+                RunNextButton.Enabled = true;
+                RunAllButton.Enabled = true;
             }
         }
 
@@ -65,10 +67,12 @@ namespace DADSTORM.MoPForm {
 
         private void RunAllButton_Click(object sender, EventArgs e) {
             CommandsGroup.Enabled = false;
+            RunNextButton.Enabled = false;
             Thread thread = new Thread(runAllCommands);
             thread.Start();
-            //thread.Join();
+            thread.Join();
             CommandsGroup.Enabled = true;
+            RunNextButton.Enabled = true;
         }
         private void runAllCommands() {
             KeyValuePair<string, string[]> command;

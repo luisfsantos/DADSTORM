@@ -91,9 +91,18 @@ namespace DADSTORM.Operator {
                         .Route(downstreamPair.Value, tupleToSend)
                         .send(tupleToSend);
                 }
+                if (downstreamOperators.Count == 0) {
+                    sendToOutputOperator(tupleToSend);
+                }
 
                 Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
             }
+        }
+
+        private void sendToOutputOperator(List<string> tuple) {
+            Thread thread = new Thread(() => OutputOperator.writeToFile(tuple));
+            thread.Start();
+            thread.Join();
         }
 
         internal void addTupleToSend(List<string> tuple)

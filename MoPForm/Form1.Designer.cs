@@ -120,6 +120,7 @@
             // 
             // RunAllButton
             // 
+            this.RunAllButton.Enabled = false;
             this.RunAllButton.Location = new System.Drawing.Point(142, 59);
             this.RunAllButton.Name = "RunAllButton";
             this.RunAllButton.Size = new System.Drawing.Size(65, 23);
@@ -130,6 +131,7 @@
             // 
             // RunNextButton
             // 
+            this.RunNextButton.Enabled = false;
             this.RunNextButton.Location = new System.Drawing.Point(71, 59);
             this.RunNextButton.Name = "RunNextButton";
             this.RunNextButton.Size = new System.Drawing.Size(65, 23);
