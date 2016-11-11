@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
 using DADSTORM.PuppetMaster.Services;
+using DADSTORM.CommonTypes.Parsing;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace DADSTORM.MoPForm {
     public partial class Dadform : Form {
         OpenFileDialog configDialog = new OpenFileDialog();
         OpenFileDialog scriptDialog = new OpenFileDialog();
+        private ScriptFileParser parser;
 
         public Dadform() {
             InitializeComponent();
@@ -49,57 +53,98 @@ namespace DADSTORM.MoPForm {
 
         private void LoadScriptButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(scriptDialog.FileName)) {
-                //TODO
-                //probably implement service in puppet master for load
+                parser = new ScriptFileParser(scriptDialog.FileName);
+                parser.parse();
             }
         }
 
         private void RunNextButton_Click(object sender, EventArgs e) {
-            //TODO
+            KeyValuePair<string, string[]> command = parser.nextCommand();
+            runCommand(command.Key, command.Value);
         }
 
         private void RunAllButton_Click(object sender, EventArgs e) {
-            //TODO
+            CommandsGroup.Enabled = false;
+            Thread thread = new Thread(runAllCommands);
+            thread.Start();
+            //thread.Join();
+            CommandsGroup.Enabled = true;
+        }
+        private void runAllCommands() {
+            KeyValuePair<string, string[]> command;
+            while(parser.hasNextCommand()) {
+                command = parser.nextCommand();
+                if (command.Key.Equals(Command.WAIT)) {
+                    Thread.Sleep(Int32.Parse(command.Value[0]));
+                    continue;
+                }
+                runCommand(command.Key, command.Value);
+            }
+
         }
         #endregion
 
+        private void runCommand(string name, string[] param) {
+            PuppetMasterService service;
+            switch (name) {
+                case Command.START:
+                    service = new StartService(param[0]);
+                    break;
+                case Command.INTERVAL:
+                    service = new IntervalService(param[0], Int32.Parse(param[1]));
+                    break;
+                case Command.STATUS:
+                    service = new StatusService();
+                    break;
+                case Command.CRASH:
+                    service = new CrashService(param[0], Int32.Parse(param[1]));
+                    break;
+                case Command.FREEZE:
+                    service = new FreezeService(param[0], Int32.Parse(param[1]));
+                    break;
+                case Command.UNFREEZE:
+                    service = new UnfreezeService(param[0], Int32.Parse(param[1]));
+                    break;
+                default:
+                    PrintToHistory("Script Parser: command '" + name + "' not recognised. Skipping command.");
+                    return;
+            }
+            service.assyncexecute();
+        }
+
         private void StartButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(StartOpIdTextBox.Text)) {
-                StartService service = new StartService(StartOpIdTextBox.Text);
-                service.assyncexecute();
+                runCommand(Command.START, new string[] { StartOpIdTextBox.Text });
             }
                 
         }
 
         private void IntervalButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(IntervalOpIdTextBox.Text) && !String.IsNullOrEmpty(IntervalTimeTextBox.Text)) {
-                IntervalService service = new IntervalService(StartOpIdTextBox.Text, Int32.Parse(IntervalTimeTextBox.Text));
-                service.assyncexecute();
-            }
-        }
-
-        private void WaitButton_Click(object sender, EventArgs e) {
-            if (!String.IsNullOrEmpty(WaitTimeTextBox.Text)) {
-               //WaitService service = new WaitService(Int32.Parse(WaitTimeTextBox.Text));
-                //service.assyncexecute();
+                runCommand(Command.INTERVAL, new string[] { IntervalOpIdTextBox.Text, IntervalTimeTextBox.Text });
             }
         }
 
         private void StatusButton_Click(object sender, EventArgs e) {
-            StatusService service = new StatusService();
-            service.assyncexecute();
+            runCommand(Command.STATUS, null);
         }
 
         private void CrashButton_Click(object sender, EventArgs e) {
-            //TODO
+            if (!String.IsNullOrEmpty(CrashOpIdTextBox.Text) && !String.IsNullOrEmpty(CrashReplTextBox.Text)) {
+                runCommand(Command.CRASH, new string[] { CrashOpIdTextBox.Text, CrashReplTextBox.Text });
+            }
         }
 
         private void FreezeButton_Click(object sender, EventArgs e) {
-            //TODO
+            if (!String.IsNullOrEmpty(FreezeOpIdTextBox.Text) && !String.IsNullOrEmpty(FreezeReplTextBox.Text)) {
+                runCommand(Command.FREEZE, new string[] { FreezeOpIdTextBox.Text, FreezeReplTextBox.Text });
+            }
         }
 
         private void UnfreezeButton_Click(object sender, EventArgs e) {
-            //TODO
+            if (!String.IsNullOrEmpty(UnfreezeOpIdTextBox.Text) && !String.IsNullOrEmpty(UnfreezeReplTextBox.Text)) {
+                runCommand(Command.UNFREEZE, new string[] { UnfreezeOpIdTextBox.Text, UnfreezeReplTextBox.Text });
+            }
         }
 
         public void PrintToHistory(string value)
@@ -111,5 +156,15 @@ namespace DADSTORM.MoPForm {
             }
             HistoryTextBox.Text += value;
         }
+    }
+
+    class Command {
+        public const string START = "Start";
+        public const string INTERVAL = "Interval";
+        public const string STATUS = "Status";
+        public const string CRASH = "Crash";
+        public const string FREEZE = "Freeze";
+        public const string UNFREEZE = "Unfreeze";
+        public const string WAIT = "Wait";
     }
 }

@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="CommonTypes.cs" />
     <Compile Include="Parsing\ConfigFileParser.cs" />
+    <Compile Include="Parsing\ScriptFileParser.cs" />
     <Compile Include="Parsing\TopologicalSort.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
