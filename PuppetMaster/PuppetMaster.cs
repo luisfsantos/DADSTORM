@@ -117,7 +117,13 @@ namespace DADSTORM.PuppetMaster {
                 Match match = regex.Match(address);
                 string ip = match.Result("${ip}");
                 List<string> upstream = getUpstream(op.Value.Input_ops, operatorsData);
-                pcs[ip].startProcess(i, op.Value.Addresses.Length, address, upstream, op.Value.OperatorSpec, op.Value.Routing, loggingLevel, semantics);
+                pcs[ip].startProcess(op.Value.Id, i, op.Value.Addresses.Length, 
+                    address, 
+                    upstream, 
+                    op.Value.OperatorSpec, 
+                    op.Value.Routing, 
+                    loggingLevel, 
+                    semantics);
                 i++;
             }
         }
