@@ -8,15 +8,16 @@ using System.Text.RegularExpressions;
 namespace DADSTORM.Operator {
     class Program {
         static void Main(string[] args) {
-            string replIndex = args[0],
-                replTotal = args[1],
-                address = args[2],
-                upstreams = args[3],
-                specName = args[4],
-                specParamStr = args[5],
-                routing = args[6],
-                logging = args[7],
-                semantics = args[8];
+            string operatorID = args[0],
+                replIndex = args[1],
+                replTotal = args[2],
+                address = args[3],
+                upstreams = args[4],
+                specName = args[5],
+                specParamStr = args[6],
+                routing = args[7],
+                logging = args[8],
+                semantics = args[9];
 
             string[] upstream_addrs = upstreams.Trim(new char[] { ']', '[' }).Split(',');
             string[] specParams = specParamStr.Trim(new char[] { ']', '[' }).Split(',');
@@ -29,12 +30,20 @@ namespace DADSTORM.Operator {
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, false);
 
-            Operator Op = new Operator(Int32.Parse(replIndex), Int32.Parse(replTotal), address, upstream_addrs, specName, specParams, routing, logging, semantics);
+            Operator Op = new Operator(operatorID, 
+                Int32.Parse(replIndex), 
+                Int32.Parse(replTotal), 
+                address, upstream_addrs, 
+                specName, specParams, 
+                routing, logging, 
+                semantics);
+
             OperatorProxy OpProxy = new OperatorProxy(Op);
-            Op.run();
 
             RemotingServices.Marshal(OpProxy,"op",
                                     typeof(OperatorProxy));
+            Op.run();
+
 
             Console.ReadLine();
             ChannelServices.UnregisterChannel(channel);

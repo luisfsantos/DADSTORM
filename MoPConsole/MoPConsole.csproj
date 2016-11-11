@@ -70,6 +70,9 @@
     <None Include="InputExamples\input01.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="InputExamples\input03.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="InputExamples\input02.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

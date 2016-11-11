@@ -17,31 +17,33 @@ namespace DADSTORM.Operator {
         private bool started = false;
         private int waittime = 0;
 
+        public string OperatorID { get; private set; }
         public int ReplIndex { get; private set; }
         public int ReplTotal { get; private set; }
         public string Address { get; private set; }
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
-        public Routing Routing { get; private set; }
+        //public Routing Routing { get; private set; }
 
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
         
-        private List<IOperator> downstreamOperators = new List<IOperator>();
+        internal Dictionary<string, List<IOperator>> downstreamOperators = new Dictionary<string, List<IOperator>>();
+        private Dictionary<string, Routing> downstreamRouting = new Dictionary<string, Routing>();
 
         internal BlockingCollection<List<string>> inputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
         private BlockingCollection<List<string>> outputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
 
 
 
-        public Operator(int replIndex, int replTotal, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+        public Operator(string operatorID, int replIndex, int replTotal, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+            this.OperatorID = operatorID;
             this.ReplIndex = replIndex;
             this.ReplTotal = replTotal;
-            this.Routing = RoutingStrategy.Routing.GetInstance(routing);
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
-            registerAtUpstreamOperators(upstream_addrs);
+            registerAtUpstreamOperators(upstream_addrs, routing);
         }
 
         private void createWorker(string workerName, string[] workerParams) {
@@ -69,9 +71,16 @@ namespace DADSTORM.Operator {
         private void send() {
             List<string> tupleToSend;
             while (true) {
-                tupleToSend = outputStream.Take();
-                //Routing.Route(downstreamOperators, tupleToSend).send(tupleToSend);
-                Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
+                    tupleToSend = outputStream.Take();
+
+                    foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
+                        downstreamRouting[downstreamPair.Key]
+                            .Route(downstreamPair.Value, tupleToSend)
+                            .send(tupleToSend);
+                    }
+
+                    Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
+                
             }
         }
 
@@ -80,8 +89,12 @@ namespace DADSTORM.Operator {
             outputStream.Add(tuple);
         }
 
-        internal void addDownstreamOperator(IOperator op) {
-            downstreamOperators.Add(op);
+        internal void addDownstreamOperator(string operator_id, int replicaIndex, IOperator op, string routing) {
+            if (!downstreamOperators.ContainsKey(operator_id)) {
+                downstreamOperators.Add(operator_id, new List<IOperator>());
+            }
+            downstreamOperators[operator_id].Insert(replicaIndex-1, op);
+            downstreamRouting.Add(operator_id, Routing.GetInstance(routing));
         }
 
         internal void addTupleToProcess(List<string> tuple)
@@ -102,17 +115,16 @@ namespace DADSTORM.Operator {
 
         }
 
-        private void registerAtUpstreamOperators(string[] addresses) {
+        private void registerAtUpstreamOperators(string[] addresses, string myRouting) {
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";
             Regex regex = new Regex(pattern);
 
             foreach (string address in addresses) {
                 if (regex.IsMatch(address)) {
                     IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
-                    upstream.addDownstreamOperator(Address);
+                    upstream.addDownstreamOperator(address, myRouting);
                 } else {
-                    //FIXME need to handle the case when the address is actually a filename
-                    TuplesReader tuplesReader = new TuplesReader(this, address, ReplIndex, ReplTotal);
+                    TuplesReader tuplesReader = new TuplesReader(this, address /*address is path*/, ReplIndex, ReplTotal);
                     Thread tuplesReaderThread = new Thread(tuplesReader.read);
                     //tuplesReaderThread.IsBackground = true;
                     tuplesReaderThread.Start();
