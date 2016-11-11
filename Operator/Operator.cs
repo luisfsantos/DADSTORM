@@ -45,14 +45,24 @@ namespace DADSTORM.Operator {
         }
 
         private void createWorker(string workerName, string[] workerParams) {
-            //throw new NotImplementedException();
             switch (workerName) {
                 case "UNIQ":
                     Worker = new UniqueWorker(this, Int32.Parse(workerParams[0]));
                     break;
-                default:
-                    Console.WriteLine("default");
+                case "COUNT":
+                    Worker = new CountWorker(this);
                     break;
+                case "DUP":
+                    Worker = new DupWorker(this);
+                    break;
+                case "FILTER":
+                    Worker = new FilterWorker(this, Int32.Parse(workerParams[0]), workerParams[1], workerParams[2]);
+                    break;
+                case "CUSTOM":
+                    Worker = new CustomWorker(this, workerParams[0], workerParams[1], workerParams[2]);
+                    break;
+                default:
+                    throw new Exception("createWorker: no worker specified");
             }
         }
 

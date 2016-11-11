@@ -31,7 +31,7 @@ namespace DADSTORM.Operator.FileReader {
             string [] tupleArray = line.Split(',');
             List<string> tuple = new List<string>();
             foreach (string field in tupleArray) {
-                tuple.Add(field.Trim(new char[] { ' ', '"' }));
+                tuple.Add(field.Trim(' '));
             }
             return tuple;
         }

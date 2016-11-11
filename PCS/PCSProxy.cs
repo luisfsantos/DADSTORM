@@ -17,7 +17,7 @@ namespace DADSTORM.PCS {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0} {1} ", replIndex, replTotal);
             sb.AppendFormat("{0} [{1}] ", address, String.Join(",", upstreams));
-            sb.AppendFormat("{0} [{1}] ", specs.Name, String.Join(",", specs.Params));
+            sb.AppendFormat("{0} [{1}] ", specs.Name, String.Join(",", specs.Params).Replace("\"", "\\\"")); //HACK need to convert " to \" because of Operator.exe Main args
             sb.AppendFormat("{0} ", routing);
             sb.AppendFormat("{0} {1}", logging, semantics);
             process.StartInfo.Arguments = sb.ToString();

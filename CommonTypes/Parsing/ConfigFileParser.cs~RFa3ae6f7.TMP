@@ -137,7 +137,7 @@ namespace DADSTORM.CommonTypes.Parsing {
             OperatorSpecification spec = new OperatorSpecification();
             spec.Name = match.Result("${op}");
             matchstr = match.Result("${params}");
-            matchstr = Regex.Replace(matchstr, @"\s+", "");
+            matchstr = Regex.Replace(matchstr, @"\s+", ""); //ATTN is not removing surrounding 
             spec.Params = matchstr.Split(',');
             opdata.OperatorSpec = spec;
             #endregion
@@ -203,7 +203,27 @@ namespace DADSTORM.CommonTypes.Parsing {
 
             List<Field> fields = dictionary.Values.ToList();
 
-            TopologicalSorter.getTopologicalSortOrder(fields);
+            //foreach (var field in fields) {
+            //    Console.WriteLine(field.Name);
+            //    if (field.DependsOn != null)
+            //        foreach (var item in field.DependsOn) {
+            //            Console.WriteLine(" -{0}", item);
+            //        }
+            //}
+
+            //Console.WriteLine("\n...Sorting...\n");
+
+            /*int[] sortOrder = */ TopologicalSorter.getTopologicalSortOrder(fields);
+
+            //for (int i = 0; i < sortOrder.Length; i++) {
+            //    var field = fields[sortOrder[i]];
+            //    Console.WriteLine(field.Name);
+            //    if (field.DependsOn != null)
+            //        foreach (var item in field.DependsOn) {
+            //            Console.WriteLine(" -{0}", item);
+            //        }
+            //}
+
         }
     }
 }
