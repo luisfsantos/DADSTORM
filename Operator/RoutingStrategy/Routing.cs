@@ -31,6 +31,6 @@ namespace DADSTORM.Operator.RoutingStrategy {
             }
         }
 
-        public abstract IOperator Route(List<IOperator> downstream, List<string> tuple);
+        public abstract int Route(int totalReplicas, List<string> tuple);
     }
 }

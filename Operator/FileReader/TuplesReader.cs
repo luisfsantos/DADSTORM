@@ -13,7 +13,7 @@ namespace DADSTORM.Operator.FileReader {
         public TuplesReader(Operator op, string path, int replicaId, int replicaTotal) {
             this.op = op;
             this.path = path;
-            this.replicaId = replicaId;
+            this.replicaId = replicaId-1;
             this.replicaTotal = replicaTotal;   
         }
 
@@ -23,7 +23,9 @@ namespace DADSTORM.Operator.FileReader {
             foreach (string line in lines) {
                 if (line.StartsWith("%%"))
                     continue;
-                op.addTupleToProcess(makeTuple(line));
+                List<string> tuple = makeTuple(line);
+                if (replicaId == op.MyRouting.Route(replicaTotal, tuple))
+                    op.addTupleToProcess(tuple);
             }
             
         }

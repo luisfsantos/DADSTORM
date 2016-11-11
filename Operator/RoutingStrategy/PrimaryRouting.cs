@@ -9,9 +9,9 @@ namespace DADSTORM.Operator.RoutingStrategy
 {
     public class PrimaryRouting : Routing
     {
-        public override IOperator Route(List<IOperator> downstream, List<string> tuple)
+        public override int Route(int totalReplicas, List<string> tuple)
         {
-            return downstream[0];
+            return 0;
         }
     }
 }

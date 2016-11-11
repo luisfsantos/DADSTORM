@@ -29,7 +29,7 @@ namespace DADSTORM.Operator {
         public string MyAddress { get; private set; }
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
-        //public Routing Routing { get; private set; }
+        public Routing MyRouting { get; private set; }
 
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
@@ -52,6 +52,7 @@ namespace DADSTORM.Operator {
             this.ReplTotal = replTotal;
             this.MyAddress = address;
             CurrentStatus = new Status(address);
+            this.MyRouting = Routing.GetInstance(routing);
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
@@ -93,10 +94,13 @@ namespace DADSTORM.Operator {
                 #endregion
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
                     try {
-                        downstreamRouting[downstreamPair.Key]
-                       .Route(downstreamPair.Value, tupleToSend)
-                       .send(tupleToSend);
+
+                        downstreamPair.Value
+                            [downstreamRouting[downstreamPair.Key]
+                                .Route(downstreamPair.Value.Count, tupleToSend)]
+                            .send(tupleToSend);
                         CurrentStatus.TupleSent();
+
                     } catch (SocketException e) {
                         CurrentStatus.PresumedDead(downstreamPair.Key);
                         //TODO: Error checking and verify if it should be removed from Downstream
@@ -105,8 +109,6 @@ namespace DADSTORM.Operator {
                 if (downstreamOperators.Count == 0) {
                     sendToOutputOperator(tupleToSend);
                 }
-
-                Console.WriteLine(String.Join(",", tupleToSend.ToArray()));
             }
         }
 

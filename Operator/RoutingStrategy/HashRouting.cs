@@ -19,13 +19,13 @@ namespace DADSTORM.Operator.RoutingStrategy
             this.Field = field;
         }
 
-        public override IOperator Route(List<IOperator> downstream, List<string> tuple)
+        public override int Route(int totalReplica, List<string> tuple)
         {
             MD5 md5Hasher = MD5.Create();
             var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(tuple[Field]));
-            int integerHash = BitConverter.ToInt32(hashed, 0);
-            int hashedOperator = integerHash % downstream.Count;
-            return downstream[hashedOperator];
+            int integerHash = Math.Abs(BitConverter.ToInt32(hashed, 0));
+            int hashedOperator = integerHash % totalReplica;
+            return hashedOperator;
         }
     }
 }

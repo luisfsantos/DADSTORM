@@ -9,11 +9,11 @@ namespace DADSTORM.Operator.RoutingStrategy
 {
     public class RandomRouting : Routing
     {
-        public override IOperator Route(List<IOperator> downstream, List<string> tuple)
+        public override int Route(int totalReplicas, List<string> tuple)
         {
             Random randomizer = new Random();
-            int randomOperator = randomizer.Next(downstream.Count);
-            return downstream[randomOperator];
+            int randomOperator = randomizer.Next(totalReplicas);
+            return randomOperator;
         }
     }
 }
