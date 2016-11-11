@@ -5,6 +5,7 @@
 *.trx
 *.nupkg
 *.nchrunchproject
+*.TMP
 
 bin/
 obj/
