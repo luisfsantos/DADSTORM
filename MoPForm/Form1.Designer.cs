@@ -34,7 +34,7 @@
             this.ScriptFileTextBox = new System.Windows.Forms.TextBox();
             this.ScriptBrowseButton = new System.Windows.Forms.Button();
             this.StartButton = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.CommandsGroup = new System.Windows.Forms.GroupBox();
             this.UnfreezeReplTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -64,7 +64,7 @@
             this.HistoryTextBox = new System.Windows.Forms.RichTextBox();
             this.ConfigGroup.SuspendLayout();
             this.ScriptGroup.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.CommandsGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // ConfigBrowseButton
@@ -113,6 +113,7 @@
             this.ScriptGroup.Controls.Add(this.LoadScriptButton);
             this.ScriptGroup.Controls.Add(this.ScriptFileTextBox);
             this.ScriptGroup.Controls.Add(this.ScriptBrowseButton);
+            this.ScriptGroup.Enabled = false;
             this.ScriptGroup.Location = new System.Drawing.Point(29, 117);
             this.ScriptGroup.Name = "ScriptGroup";
             this.ScriptGroup.Size = new System.Drawing.Size(530, 115);
@@ -177,41 +178,42 @@
             this.StartButton.UseVisualStyleBackColor = true;
             this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // groupBox3
+            // CommandsGroup
             // 
-            this.groupBox3.Controls.Add(this.UnfreezeReplTextBox);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.UnfreezeOpIdTextBox);
-            this.groupBox3.Controls.Add(this.FreezeReplTextBox);
-            this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.FreezeOpIdTextBox);
-            this.groupBox3.Controls.Add(this.CrashReplTextBox);
-            this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.WaitTimeTextBox);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.WaitButton);
-            this.groupBox3.Controls.Add(this.UnfreezeButton);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.FreezeButton);
-            this.groupBox3.Controls.Add(this.CrashOpIdTextBox);
-            this.groupBox3.Controls.Add(this.CrashButton);
-            this.groupBox3.Controls.Add(this.StatusButton);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.IntervalTimeTextBox);
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.IntervalOpIdTextBox);
-            this.groupBox3.Controls.Add(this.IntervalButton);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.StartOpIdTextBox);
-            this.groupBox3.Controls.Add(this.StartButton);
-            this.groupBox3.Location = new System.Drawing.Point(29, 250);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(530, 179);
-            this.groupBox3.TabIndex = 8;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Commands";
+            this.CommandsGroup.Controls.Add(this.UnfreezeReplTextBox);
+            this.CommandsGroup.Controls.Add(this.label5);
+            this.CommandsGroup.Controls.Add(this.label6);
+            this.CommandsGroup.Controls.Add(this.UnfreezeOpIdTextBox);
+            this.CommandsGroup.Controls.Add(this.FreezeReplTextBox);
+            this.CommandsGroup.Controls.Add(this.label9);
+            this.CommandsGroup.Controls.Add(this.label10);
+            this.CommandsGroup.Controls.Add(this.FreezeOpIdTextBox);
+            this.CommandsGroup.Controls.Add(this.CrashReplTextBox);
+            this.CommandsGroup.Controls.Add(this.label8);
+            this.CommandsGroup.Controls.Add(this.WaitTimeTextBox);
+            this.CommandsGroup.Controls.Add(this.label7);
+            this.CommandsGroup.Controls.Add(this.WaitButton);
+            this.CommandsGroup.Controls.Add(this.UnfreezeButton);
+            this.CommandsGroup.Controls.Add(this.label4);
+            this.CommandsGroup.Controls.Add(this.FreezeButton);
+            this.CommandsGroup.Controls.Add(this.CrashOpIdTextBox);
+            this.CommandsGroup.Controls.Add(this.CrashButton);
+            this.CommandsGroup.Controls.Add(this.StatusButton);
+            this.CommandsGroup.Controls.Add(this.label3);
+            this.CommandsGroup.Controls.Add(this.IntervalTimeTextBox);
+            this.CommandsGroup.Controls.Add(this.label2);
+            this.CommandsGroup.Controls.Add(this.IntervalOpIdTextBox);
+            this.CommandsGroup.Controls.Add(this.IntervalButton);
+            this.CommandsGroup.Controls.Add(this.label1);
+            this.CommandsGroup.Controls.Add(this.StartOpIdTextBox);
+            this.CommandsGroup.Controls.Add(this.StartButton);
+            this.CommandsGroup.Enabled = false;
+            this.CommandsGroup.Location = new System.Drawing.Point(29, 250);
+            this.CommandsGroup.Name = "CommandsGroup";
+            this.CommandsGroup.Size = new System.Drawing.Size(530, 179);
+            this.CommandsGroup.TabIndex = 8;
+            this.CommandsGroup.TabStop = false;
+            this.CommandsGroup.Text = "Commands";
             // 
             // UnfreezeReplTextBox
             // 
@@ -450,7 +452,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(589, 754);
             this.Controls.Add(this.HistoryTextBox);
-            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.CommandsGroup);
             this.Controls.Add(this.ScriptGroup);
             this.Controls.Add(this.ConfigGroup);
             this.MaximizeBox = false;
@@ -462,8 +464,8 @@
             this.ConfigGroup.PerformLayout();
             this.ScriptGroup.ResumeLayout(false);
             this.ScriptGroup.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.CommandsGroup.ResumeLayout(false);
+            this.CommandsGroup.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -479,7 +481,7 @@
         private System.Windows.Forms.TextBox ScriptFileTextBox;
         private System.Windows.Forms.Button ScriptBrowseButton;
         private System.Windows.Forms.Button StartButton;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox CommandsGroup;
         private System.Windows.Forms.Button FreezeButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox CrashOpIdTextBox;
