@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
@@ -37,6 +38,8 @@ namespace DADSTORM.Operator {
 
             Console.ReadLine();
             ChannelServices.UnregisterChannel(channel);
+            Process.GetCurrentProcess().CloseMainWindow();
+            Process.GetCurrentProcess().Close();
         }
     }
 }
