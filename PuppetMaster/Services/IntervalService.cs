@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DADSTORM.RemoteInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,18 +9,21 @@ namespace DADSTORM.PuppetMaster.Services
 {
     public class IntervalService : PuppetMasterService
     {
-        private string op_id;
+        private string OpID;
         private int ms;
 
-        public IntervalService(string op_id, int ms)
+        public IntervalService(string opID, int ms)
         {
-            this.op_id = op_id;
+            this.OpID = opID;
             this.ms = ms;
         }
 
         public override void execute()
         {
-            PuppetMaster.Instance.interval(op_id, ms);
+            List<ICommands> replicas = PuppetMaster.Instance.GetOperator(OpID);
+            foreach (ICommands replica in replicas) {
+                replica.interval(ms);
+            }
         }
     }
 }

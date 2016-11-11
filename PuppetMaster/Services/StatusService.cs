@@ -10,7 +10,7 @@ namespace DADSTORM.PuppetMaster.Services
     {
         public override void execute()
         {
-            PuppetMaster.Instance.status();
+            
         }
     }
 }

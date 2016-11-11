@@ -22,6 +22,8 @@ namespace DADSTORM.Operator {
             string[] upstream_addrs = upstreams.Trim(new char[] { ']', '[' }).Split(',');
             string[] specParams = specParamStr.Trim(new char[] { ']', '[' }).Split(',');
 
+            Console.Title = "Operator: " + operatorID + " & Replica " + replIndex + " of " + replTotal;
+
             #region Get Port
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:(?<port>\d{1,5})/op";
             int port = Int32.Parse(Regex.Match(address, pattern).Result("${port}"));

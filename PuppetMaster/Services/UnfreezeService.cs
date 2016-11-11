@@ -19,7 +19,7 @@ namespace DADSTORM.PuppetMaster.Services
 
         public override void execute()
         {
-            PuppetMaster.Instance.unfreeze(OpId);
+            PuppetMaster.Instance.GetReplica(OpId, Replica).freeze();
         }
     }
 }
