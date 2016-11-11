@@ -16,8 +16,8 @@ namespace DADSTORM.MoPForm {
         #region - Config - 
         private void ConfigBrowseButton_Click(object sender, EventArgs e) {
             configDialog.InitialDirectory = "c:\\";
-            configDialog.Filter = "Text files (*.txt)|*.txt";
-            //configDialog.FilterIndex = 1;
+            configDialog.Filter = "Configuration files (*.config)|*.config|Text files (*.txt)|*.txt";
+            configDialog.FilterIndex = 1;
             configDialog.RestoreDirectory = true;
 
             if (configDialog.ShowDialog() == DialogResult.OK) {
