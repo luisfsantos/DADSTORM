@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDebug.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="IOperator.cs" />
     <Compile Include="IPCS.cs" />
     <Compile Include="ICommands.cs" />

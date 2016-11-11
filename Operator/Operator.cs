@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Threading;
 using DADSTORM.Operator.FileReader;
+using DADSTORM.Operator.Logger;
 
 namespace DADSTORM.Operator {
 
@@ -28,6 +29,8 @@ namespace DADSTORM.Operator {
 
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
+
+        internal ILogger Logger = new LocalLogger();
 
         private List<Thread> WorkingThreads = new List<Thread>();
         
@@ -80,7 +83,9 @@ namespace DADSTORM.Operator {
                 if (HasInterval) Thread.Sleep(WaitTime);
                 #endregion
                 tupleToSend = outputStream.Take();
-
+                #region Logger
+                if (Logging.Equals(LoggingLevel.Full)) Logger.sendInfo(MyAddress, tupleToSend);
+                #endregion
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
                     downstreamRouting[downstreamPair.Key]
                         .Route(downstreamPair.Value, tupleToSend)

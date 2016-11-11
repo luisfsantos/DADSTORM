@@ -7,10 +7,13 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
 using System.Text.RegularExpressions;
+using System.Collections;
+using System.Runtime.Serialization.Formatters;
+using System.Threading;
 
 namespace DADSTORM.PuppetMaster {
     public class PuppetMaster {
-        private static readonly log4net.ILog log =
+        internal static readonly log4net.ILog Log =
                     log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly int PORT = 10001;
         private static readonly string NAME = "MoP";
@@ -56,16 +59,19 @@ namespace DADSTORM.PuppetMaster {
             loggingLevel = parser.GetLogging();
             semantics = parser.GetSemantics();
             #endregion
-
+            Log.Debug("Parse Config Done");
             #region Create Debug
+            MoPProxy logger = new MoPProxy();
             if (loggingLevel.Equals(LoggingLevel.Full))
             {
-                TcpChannel channel = new TcpChannel(PuppetMaster.PORT);
+                BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
+                provider.TypeFilterLevel = TypeFilterLevel.Full;
+                IDictionary props = new Hashtable();
+                props["port"] = PuppetMaster.PORT;
+                TcpChannel channel = new TcpChannel(props, null, provider);
                 ChannelServices.RegisterChannel(channel, false);
-                RemotingConfiguration.RegisterWellKnownServiceType(
-                                        typeof(MoPProxy),
-                                        PuppetMaster.NAME,
-                                        WellKnownObjectMode.Singleton);
+                RemotingServices.Marshal(logger, PuppetMaster.NAME,
+                                    typeof(MoPProxy));
             } else
             {
                 TcpChannel channel = new TcpChannel();
@@ -90,6 +96,17 @@ namespace DADSTORM.PuppetMaster {
             foreach (KeyValuePair<string, OperatorData> op in operatorsData) {
                 launchOperator(op, operatorsData);
                 connectToOperator(op);
+            }
+            #endregion
+
+            Thread.Sleep(1000);
+            #region SendLogger
+            if (loggingLevel.Equals(LoggingLevel.Full)) {
+                foreach (List<ICommands> op in operators.Values) {
+                    foreach (ICommands replica in op) {
+                        replica.setLogger(logger);
+                    }
+                }
             }
             #endregion
 
@@ -143,46 +160,6 @@ namespace DADSTORM.PuppetMaster {
             }
             return result;
         }
-
-
-
-        #region TO REMOVE
-        public void start(string op_id) {
-            log.Info("Start " + op_id);
-            //TODO
-        }
-
-        public void interval(string op_id, int ms) {
-            log.Info("Interval " + op_id + " " + ms);
-            //TODO
-        }
-
-        public void status() {
-            log.Info("Status");
-            //TODO
-        }
-
-        public void crash(string process) {
-            log.Info("Crash " + process);
-            //TODO
-        }
-
-        public void freeze(string process) {
-            log.Info("Freeze " + process);
-            //TODO
-        }
-
-        public void unfreeze(string process) {
-            log.Info("Unfreeze " + process);
-            //TODO
-        }
-
-        public void wait(int ms) {
-            log.Info("Wait " + ms);
-            //TODO
-        }
-        #endregion
-
 
     }
 }

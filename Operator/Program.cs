@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Serialization.Formatters;
 using System.Text.RegularExpressions;
 
 namespace DADSTORM.Operator {
@@ -28,8 +30,11 @@ namespace DADSTORM.Operator {
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:(?<port>\d{1,5})/op";
             int port = Int32.Parse(Regex.Match(address, pattern).Result("${port}"));
             #endregion
-
-            TcpChannel channel = new TcpChannel(port);
+            BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
+            provider.TypeFilterLevel = TypeFilterLevel.Full;
+            IDictionary props = new Hashtable();
+            props["port"] = port;
+            TcpChannel channel = new TcpChannel(props, null, provider);
             ChannelServices.RegisterChannel(channel, false);
 
             Operator Op = new Operator(operatorID, 

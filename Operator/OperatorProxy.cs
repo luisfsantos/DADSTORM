@@ -68,6 +68,10 @@ namespace DADSTORM.Operator
         {
             Op.Frozen.Set();
         }
+
+        public void setLogger(ILogger logger) {
+            Op.Logger = logger;
+        }
         #endregion
 
     }

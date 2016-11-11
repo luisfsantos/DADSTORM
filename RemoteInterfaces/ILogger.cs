@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DADSTORM.RemoteInterfaces
 {
-    public interface IDebug
+    public interface ILogger
     {
-        void sendInfo(/* FIX ME tuple*/);
+        void sendInfo(string OPAddress, List<string> tuple);
     }
 }

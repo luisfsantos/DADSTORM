@@ -12,5 +12,7 @@
         void freeze();
 
         void unfreeze();
+
+        void setLogger(ILogger logger);
     }
 }

@@ -7,11 +7,11 @@ using DADSTORM.RemoteInterfaces;
 
 namespace DADSTORM.PuppetMaster
 {
-    public class MoPProxy : IDebug
+    [Serializable]
+    public class MoPProxy : MarshalByRefObject, ILogger
     {
-        public void sendInfo()
-        {
-            throw new NotImplementedException();
+        public void sendInfo(string OpAddress, List<string> tuple) {
+            PuppetMaster.Log.Debug("tuple " + OpAddress + ", " + String.Join(" ", tuple.ToArray()));
         }
     }
 }
