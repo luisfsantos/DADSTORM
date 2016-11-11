@@ -12,6 +12,9 @@ using System.Runtime.Serialization.Formatters;
 using System.Threading;
 
 namespace DADSTORM.PuppetMaster {
+
+    public delegate void DelegateUpdateInfo(string msg);
+
     public class PuppetMaster {
         internal static readonly log4net.ILog Log =
                     log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -21,6 +24,7 @@ namespace DADSTORM.PuppetMaster {
         Dictionary<string, IPCS> pcs = new Dictionary<string, IPCS>();
         LoggingLevel loggingLevel;
         Semantics semantics;
+        internal MoPProxy logger;
 
         private static readonly PuppetMaster instance = new PuppetMaster();
 
@@ -52,10 +56,14 @@ namespace DADSTORM.PuppetMaster {
 
         public List<ICommands> GetAllOperators() {
             List<ICommands> result = new List<ICommands>();
-            foreach(List<ICommands> replicas in operators.Values) {
+            foreach (List<ICommands> replicas in operators.Values) {
                 result.AddRange(replicas);
             }
             return result;
+        }
+
+        public void setLoggerOutputDestination(DelegateUpdateInfo del) {
+            logger.addDelegateUpdateInfo(del);
         }
 
         public bool init(string pathToFile)
@@ -69,7 +77,7 @@ namespace DADSTORM.PuppetMaster {
             #endregion
             Log.Debug("Parse Config Done");
             #region Create Debug
-            MoPProxy logger = new MoPProxy();
+            logger = new MoPProxy();
             if (loggingLevel.Equals(LoggingLevel.Full))
             {
                 BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();

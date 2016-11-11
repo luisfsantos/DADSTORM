@@ -32,4 +32,14 @@ namespace DADSTORM.CommonTypes {
 
     [Serializable]
     public enum LoggingLevel { Light, Full }
+
+    public class Command {
+        public const string START = "Start";
+        public const string INTERVAL = "Interval";
+        public const string STATUS = "Status";
+        public const string CRASH = "Crash";
+        public const string FREEZE = "Freeze";
+        public const string UNFREEZE = "Unfreeze";
+        public const string WAIT = "Wait";
+    }
 }

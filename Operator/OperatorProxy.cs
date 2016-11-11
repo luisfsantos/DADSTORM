@@ -20,10 +20,10 @@ namespace DADSTORM.Operator
         }
 
         #region Operator
-        public void addDownstreamOperator(string address, string routing)
+        public void addDownstreamOperator(string address, string routing, string DownstreamID, int replica)
         {
             IOperator downstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
-            Op.addDownstreamOperator(Op.OperatorID, Op.ReplIndex, downstream, routing);
+            Op.addDownstreamOperator(DownstreamID, replica, downstream, routing);
         }
 
         public void send(List<string> tuple)

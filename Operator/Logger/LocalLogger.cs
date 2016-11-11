@@ -10,7 +10,7 @@ namespace DADSTORM.Operator.Logger {
 
         public void sendInfo(string OpAddress, List<string> tuple) {
             //Log to file if possible
-            Console.WriteLine("tuple " + OpAddress + ", " + String.Join(" ", tuple.ToArray()));
+            Console.WriteLine("tuple " + OpAddress + ", <" + String.Join(", ", tuple.ToArray()) + ">");
         }
     }
 }

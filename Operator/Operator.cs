@@ -169,7 +169,7 @@ namespace DADSTORM.Operator {
             foreach (string address in addresses) {
                 if (regex.IsMatch(address)) {
                     IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
-                    upstream.addDownstreamOperator(MyAddress, myRouting);
+                    upstream.addDownstreamOperator(MyAddress, myRouting, OperatorID, ReplIndex);
                 } else {
                     TuplesReader tuplesReader = new TuplesReader(this, address /*address is path*/, ReplIndex, ReplTotal);
                     Thread tuplesReaderThread = new Thread(tuplesReader.read);

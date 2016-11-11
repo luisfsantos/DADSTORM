@@ -1,12 +1,8 @@
-﻿using DADSTORM.RemoteInterfaces;
-using System;
+﻿using DADSTORM.CommonTypes;
+using DADSTORM.RemoteInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DADSTORM.PuppetMaster.Services
-{
+namespace DADSTORM.PuppetMaster.Services {
     public class StartService : PuppetMasterService
     {
         private string OpID;
@@ -21,7 +17,9 @@ namespace DADSTORM.PuppetMaster.Services
             List<ICommands> replicas = PuppetMaster.Instance.GetOperator(OpID);
             foreach( ICommands replica in replicas) {
                 replica.start();
-            } 
+            }
+            PuppetMaster.Instance.logger.notify(Command.START, new string[] { OpID });
+
         }
     }
 }

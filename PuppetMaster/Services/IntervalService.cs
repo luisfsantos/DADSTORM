@@ -1,4 +1,5 @@
-﻿using DADSTORM.RemoteInterfaces;
+﻿using DADSTORM.CommonTypes;
+using DADSTORM.RemoteInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace DADSTORM.PuppetMaster.Services
             foreach (ICommands replica in replicas) {
                 replica.interval(ms);
             }
+            PuppetMaster.Instance.logger.notify(Command.INTERVAL, new string[] { OpID, ms.ToString() });
+
         }
     }
 }
