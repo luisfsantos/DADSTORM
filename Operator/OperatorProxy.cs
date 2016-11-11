@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,17 +36,18 @@ namespace DADSTORM.Operator
 
         public void crash()
         {
+            RemotingServices.Disconnect(this);
             Process.GetCurrentProcess().Kill();
         }
 
         public void freeze()
         {
-            Op.freeze();
+            Op.Frozen.Reset();
         }
 
         public void interval(int ms)
         {
-            throw new NotImplementedException();
+            Op.interval(ms);
         }
 
         public void start()
@@ -64,7 +66,7 @@ namespace DADSTORM.Operator
 
         public void unfreeze()
         {
-            Op.unfreeze();
+            Op.Frozen.Set();
         }
         #endregion
 

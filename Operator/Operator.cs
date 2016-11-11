@@ -13,9 +13,10 @@ namespace DADSTORM.Operator {
 
     public class Operator {
 
-        private bool Frozen = false;
         internal int WaitTime { get; private set; }  = 0;
         internal bool HasInterval { get; private set; } = false;
+        internal ManualResetEvent Frozen { get; private set; } = new ManualResetEvent(true);
+
 
         public string OperatorID { get; private set; }
         public int ReplIndex { get; private set; }
@@ -74,7 +75,10 @@ namespace DADSTORM.Operator {
         private void send() {
             List<string> tupleToSend;
             while (true) {
+                #region DEBUG
+                Frozen.WaitOne();
                 if (HasInterval) Thread.Sleep(WaitTime);
+                #endregion
                 tupleToSend = outputStream.Take();
 
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
@@ -119,18 +123,6 @@ namespace DADSTORM.Operator {
             Thread sendThread = new Thread(send);
             WorkingThreads.Add(sendThread);
             sendThread.Start();
-        }
-
-        internal void freeze() {
-            foreach(Thread thread in WorkingThreads) {
-                thread.Suspend();
-            }
-        }
-
-        internal void unfreeze() {
-            foreach (Thread thread in WorkingThreads) {
-                thread.Resume();
-            }
         }
 
         internal void interval(int ms) {

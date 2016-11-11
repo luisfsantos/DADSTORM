@@ -14,6 +14,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
         public void execute() {
             List<string> tupleToProcess;
             while(true) {
+                Op.Frozen.WaitOne();
                 if (Op.HasInterval) Thread.Sleep(Op.WaitTime);
                 tupleToProcess = Op.getTupleToProcess();
                 processTuple(tupleToProcess);
