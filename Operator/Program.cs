@@ -21,7 +21,7 @@ namespace DADSTORM.Operator {
 
             string[] upstream_addrs = upstreams.Trim(new char[] { ']', '[' }).Split(',');
             string[] specParams = specParamStr.Trim(new char[] { ']', '[' }).Split(',');
-
+            //Debugger.Launch();
             Console.Title = "Operator: " + operatorID + " & Replica " + replIndex + " of " + replTotal;
 
             #region Get Port

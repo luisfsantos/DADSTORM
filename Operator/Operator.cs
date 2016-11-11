@@ -20,7 +20,7 @@ namespace DADSTORM.Operator {
         public string OperatorID { get; private set; }
         public int ReplIndex { get; private set; }
         public int ReplTotal { get; private set; }
-        public string Address { get; private set; }
+        public string MyAddress { get; private set; }
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
         //public Routing Routing { get; private set; }
@@ -42,6 +42,7 @@ namespace DADSTORM.Operator {
             this.OperatorID = operatorID;
             this.ReplIndex = replIndex;
             this.ReplTotal = replTotal;
+            this.MyAddress = address;
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
@@ -150,7 +151,7 @@ namespace DADSTORM.Operator {
             foreach (string address in addresses) {
                 if (regex.IsMatch(address)) {
                     IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
-                    upstream.addDownstreamOperator(address, myRouting);
+                    upstream.addDownstreamOperator(MyAddress, myRouting);
                 } else {
                     TuplesReader tuplesReader = new TuplesReader(this, address /*address is path*/, ReplIndex, ReplTotal);
                     Thread tuplesReaderThread = new Thread(tuplesReader.read);

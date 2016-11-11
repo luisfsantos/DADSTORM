@@ -80,8 +80,8 @@ namespace DADSTORM.MoPForm {
 
         private void WaitButton_Click(object sender, EventArgs e) {
             if (!String.IsNullOrEmpty(WaitTimeTextBox.Text)) {
-                WaitService service = new WaitService(Int32.Parse(WaitTimeTextBox.Text));
-                service.assyncexecute();
+               //WaitService service = new WaitService(Int32.Parse(WaitTimeTextBox.Text));
+                //service.assyncexecute();
             }
         }
 
