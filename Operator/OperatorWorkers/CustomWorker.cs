@@ -19,6 +19,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
             byte[] code = File.ReadAllBytes(Dll);
             Assembly assembly = Assembly.Load(code);
 
+
             foreach (Type type in assembly.GetTypes()) {
                 if (type.IsClass) {
                     if (type.FullName.EndsWith("." + Class)) {
@@ -31,10 +32,10 @@ namespace DADSTORM.Operator.OperatorWorkers {
                             ClassObj, 
                             args);
 
-                        IList<List<string>> result = (IList<List<string>>)resultObject;
+                        IList<IList<string>> result = (IList<IList<string>>)resultObject;
 
-                        foreach (List<string> resultTuple in result) {
-                            Op.addTupleToSend(resultTuple);
+                        foreach (IList<string> resultTuple in result) {
+                            Op.addTupleToSend((List<string>)resultTuple);
                         }
                         break;
                     }

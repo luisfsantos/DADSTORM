@@ -12,11 +12,13 @@ namespace DADSTORM.Operator
     public class OperatorProxy : MarshalByRefObject, IOperator, ICommands
     {
         Operator Op;
+        public int ReplIndex{ get; private set; }
         private bool started = false;
 
         public OperatorProxy(Operator op)
         {
             this.Op = op;
+            this.ReplIndex = op.ReplIndex;
         }
 
         #region Operator

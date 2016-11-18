@@ -115,7 +115,7 @@ namespace DADSTORM.PuppetMaster {
             }
             #endregion
 
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             #region SendLogger
             if (loggingLevel.Equals(LoggingLevel.Full)) {
                 foreach (List<ICommands> op in operators.Values) {

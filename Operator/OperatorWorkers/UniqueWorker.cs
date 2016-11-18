@@ -15,7 +15,7 @@ namespace DADSTORM.Operator.OperatorWorkers
 
         public UniqueWorker (Operator op, int field) : base(op)
         {
-            this.Field = field;
+            this.Field = field-1;
         }
 
         public override void processTuple(List<string> tuple)

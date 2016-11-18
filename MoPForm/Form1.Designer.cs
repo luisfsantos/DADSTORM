@@ -76,8 +76,10 @@
             // 
             // ConfigFileTextBox
             // 
+            this.ConfigFileTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.ConfigFileTextBox.Location = new System.Drawing.Point(71, 33);
             this.ConfigFileTextBox.Name = "ConfigFileTextBox";
+            this.ConfigFileTextBox.ReadOnly = true;
             this.ConfigFileTextBox.Size = new System.Drawing.Size(300, 20);
             this.ConfigFileTextBox.TabIndex = 1;
             // 
@@ -152,8 +154,10 @@
             // 
             // ScriptFileTextBox
             // 
+            this.ScriptFileTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.ScriptFileTextBox.Location = new System.Drawing.Point(71, 33);
             this.ScriptFileTextBox.Name = "ScriptFileTextBox";
+            this.ScriptFileTextBox.ReadOnly = true;
             this.ScriptFileTextBox.Size = new System.Drawing.Size(300, 20);
             this.ScriptFileTextBox.TabIndex = 1;
             // 

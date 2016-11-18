@@ -71,6 +71,8 @@ namespace DADSTORM.CommonTypes.Parsing {
         private void ExtractOperatorInfo(Match op) {
             readLines();
 
+            //Console.WriteLine(op.ToString());
+
             OperatorData opdata = new OperatorData();
             Match match;
             string matchstr;
@@ -131,9 +133,11 @@ namespace DADSTORM.CommonTypes.Parsing {
             #endregion
 
             #region - match OPERATOR_SPEC -
-            pattern = @"(?<=OPERATOR_SPEC\s+)(?<op>\b\w+\b)(?<params>.+?)\n"; //uses lookbehind
+            pattern = @"(?<=OPERATOR_SPEC\s+)(?<op>\b\w+\b)(?<params>.+?)?\n"; //uses lookbehind
 
             match = Regex.Match(op.ToString(), pattern);
+
+            Console.WriteLine(match.ToString());
             OperatorSpecification spec = new OperatorSpecification();
             spec.Name = match.Result("${op}");
             matchstr = match.Result("${params}");

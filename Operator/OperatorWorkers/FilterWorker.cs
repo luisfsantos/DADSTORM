@@ -9,7 +9,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
         private string Value;
 
         public FilterWorker(Operator op, int field, string condition, string value) : base(op) {
-            this.Field = field;
+            this.Field = field-1;
             this.Condiditon = condition.Trim('"');
             this.Value = value;
         }

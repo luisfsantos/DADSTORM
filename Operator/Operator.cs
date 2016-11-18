@@ -30,6 +30,9 @@ namespace DADSTORM.Operator {
         public OperatorWorker Worker { get; private set; }
         public string[] SpecParams { get; private set; }
         public Routing MyRouting { get; private set; }
+        public string routing { get; private set; }
+        public string[] upstream_addrs { get; set; } 
+
 
         public LoggingLevel Logging { get; private set; }
         public Semantics Semantics { get; private set; }
@@ -56,7 +59,8 @@ namespace DADSTORM.Operator {
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.Semantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
-            registerAtUpstreamOperators(upstream_addrs, routing);
+            this.routing = routing;
+            this.upstream_addrs = upstream_addrs;
         }
 
         private void createWorker(string workerName, string[] workerParams) {
@@ -127,8 +131,12 @@ namespace DADSTORM.Operator {
             if (!downstreamOperators.ContainsKey(operator_id)) {
                 downstreamOperators.Add(operator_id, new List<IOperator>());
             }
-            downstreamOperators[operator_id].Insert(replicaIndex-1, op);
-            downstreamRouting.Add(operator_id, Routing.GetInstance(routing));
+            downstreamOperators[operator_id].Add(op);
+            downstreamOperators[operator_id].Sort(
+                (op1,op2) => ((OperatorProxy)op1).ReplIndex.CompareTo(((OperatorProxy)op2).ReplIndex));
+            if (!downstreamRouting.ContainsKey(operator_id)) {
+                downstreamRouting.Add(operator_id, Routing.GetInstance(routing));
+            }
         }
 
         internal void addTupleToProcess(List<string> tuple)
@@ -164,10 +172,11 @@ namespace DADSTORM.Operator {
 
         #endregion
 
-        private void registerAtUpstreamOperators(string[] addresses, string myRouting) {
+        public void registerAtUpstreamOperators(string[] addresses, string myRouting) {
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";
             Regex regex = new Regex(pattern);
 
+            //Thread.Sleep(5000);
             foreach (string address in addresses) {
                 if (regex.IsMatch(address)) {
                     IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);

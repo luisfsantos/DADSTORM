@@ -21,7 +21,7 @@ namespace DADSTORM.MoPForm {
         #region - Config - 
         private void ConfigBrowseButton_Click(object sender, EventArgs e) {
             configDialog.InitialDirectory = "c:\\";
-            configDialog.Filter = "Configuration files (*.config)|*.config|Text files (*.txt)|*.txt";
+            configDialog.Filter = "Configuration files (*.config, *.txt)|*.config;*.txt";
             configDialog.FilterIndex = 1;
             configDialog.RestoreDirectory = true;
 
@@ -63,30 +63,41 @@ namespace DADSTORM.MoPForm {
         }
 
         private void RunNextButton_Click(object sender, EventArgs e) {
-            KeyValuePair<string, string[]> command = parser.nextCommand();
-            runCommand(command.Key, command.Value);
+            if (parser.hasNextCommand()) {
+                KeyValuePair<string, string[]> command = parser.nextCommand();
+                runCommand(command.Key, command.Value);
+            } else {
+                PrintToHistory("No commands to run");
+            }
         }
 
         private void RunAllButton_Click(object sender, EventArgs e) {
-            CommandsGroup.Enabled = false;
-            RunNextButton.Enabled = false;
-            Thread thread = new Thread(runAllCommands);
-            thread.Start();
-            thread.Join();
-            CommandsGroup.Enabled = true;
-            RunNextButton.Enabled = true;
+            if (parser.hasNextCommand()) {
+                CommandsGroup.Enabled = false;
+                LoadScriptButton.Enabled = false;
+                RunNextButton.Enabled = false;
+                Thread thread = new Thread(runAllCommands);
+                thread.Start();
+                //thread.Join();
+                LoadScriptButton.Enabled = true;
+                CommandsGroup.Enabled = true;
+                RunNextButton.Enabled = true;
+            } else {
+                PrintToHistory("No commands to run");
+            }
         }
         private void runAllCommands() {
             KeyValuePair<string, string[]> command;
             while(parser.hasNextCommand()) {
                 command = parser.nextCommand();
                 if (command.Key.Equals(Command.WAIT)) {
+                    PrintToHistory("Waiting for " + command.Value[0] + " ms");
                     Thread.Sleep(Int32.Parse(command.Value[0]));
                     continue;
                 }
                 runCommand(command.Key, command.Value);
             }
-
+            PrintToHistory("Finished running all commands");
         }
         #endregion
 
@@ -111,6 +122,9 @@ namespace DADSTORM.MoPForm {
                 case Command.UNFREEZE:
                     service = new UnfreezeService(param[0], Int32.Parse(param[1]));
                     break;
+                case Command.WAIT:
+                    PrintToHistory("Script Parser: command 'Wait' does not make sense when running commands one by one");
+                    return;
                 default:
                     PrintToHistory("Script Parser: command '" + name + "' not recognised. Skipping command.");
                     return;
