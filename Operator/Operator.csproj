@@ -62,7 +62,6 @@
     <Compile Include="OperatorWorkers\FilterWorker.cs" />
     <Compile Include="OperatorWorkers\OperatorWorker.cs" />
     <Compile Include="OperatorWorkers\UniqueWorker.cs" />
-    <Compile Include="OutputOperator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoutingStrategy\HashRouting.cs" />

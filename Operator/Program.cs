@@ -51,8 +51,6 @@ namespace DADSTORM.Operator {
             RemotingServices.Marshal(OpProxy,"op",
                                     typeof(OperatorProxy));
 
-            Op.registerAtUpstreamOperators(Op.upstream_addrs, Op.routing);
-
 
             Console.ReadLine();
             ChannelServices.UnregisterChannel(channel);

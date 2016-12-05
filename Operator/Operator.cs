@@ -19,6 +19,7 @@ namespace DADSTORM.Operator {
         internal int WaitTime { get; private set; }  = 0;
         internal bool HasInterval { get; private set; } = false;
         internal ManualResetEvent Frozen { get; private set; } = new ManualResetEvent(true);
+        internal ManualResetEvent noDownstream { get; private set; } = new ManualResetEvent(false);
 
         internal Status CurrentStatus;
 
@@ -92,9 +93,11 @@ namespace DADSTORM.Operator {
                 Frozen.WaitOne();
                 if (HasInterval) Thread.Sleep(WaitTime);
                 #endregion
+                noDownstream.WaitOne();
                 tupleToSend = outputStream.Take();
                 #region Logger
-                if (Logging.Equals(LoggingLevel.Full)) Logger.sendInfo(MyAddress, tupleToSend);
+                if (Logging.Equals(LoggingLevel.Full))
+                    Logger.sendInfo(MyAddress, tupleToSend);
                 #endregion
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
                     try {
@@ -110,16 +113,13 @@ namespace DADSTORM.Operator {
                         //TODO: Error checking and verify if it should be removed from Downstream
                     }
                 }
-                if (downstreamOperators.Count == 0) {
-                    sendToOutputOperator(tupleToSend);
-                }
             }
         }
 
         private void sendToOutputOperator(List<string> tuple) {
-            Thread thread = new Thread(() => OutputOperator.writeToFile(tuple));
-            thread.Start();
-            thread.Join();
+            //Thread thread = new Thread(() => OutputOperator.writeToFile(tuple));
+           // thread.Start();
+           // thread.Join();
         }
 
         internal void addTupleToSend(List<string> tuple)
@@ -137,6 +137,7 @@ namespace DADSTORM.Operator {
             if (!downstreamRouting.ContainsKey(operator_id)) {
                 downstreamRouting.Add(operator_id, Routing.GetInstance(routing));
             }
+            noDownstream.Set();
         }
 
         internal void addTupleToProcess(List<string> tuple)
@@ -152,6 +153,8 @@ namespace DADSTORM.Operator {
         #region Commands
 
         public void run() {
+            registerAtUpstreamOperators(upstream_addrs, routing);
+
             Thread processThread = new Thread(Worker.execute);
             WorkingThreads.Add(processThread);
             processThread.Start();

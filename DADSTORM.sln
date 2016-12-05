@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMaster", "PuppetMaster\PuppetMaster.csproj", "{C6D284BA-D62D-457A-9475-B891B3145295}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoPConsole", "MoPConsole\MoPConsole.csproj", "{23295F15-213A-4DE8-AAE9-B2FC44614F00}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "CommonTypes\CommonTypes.csproj", "{D41B00E4-7224-4F8E-831B-69E5E89B8F3C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoPForm", "MoPForm\MoPForm.csproj", "{5E627B14-C971-4753-9867-1E3D84C0151D}"
@@ -30,10 +28,6 @@ Global
 		{C6D284BA-D62D-457A-9475-B891B3145295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6D284BA-D62D-457A-9475-B891B3145295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6D284BA-D62D-457A-9475-B891B3145295}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23295F15-213A-4DE8-AAE9-B2FC44614F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23295F15-213A-4DE8-AAE9-B2FC44614F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23295F15-213A-4DE8-AAE9-B2FC44614F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23295F15-213A-4DE8-AAE9-B2FC44614F00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D41B00E4-7224-4F8E-831B-69E5E89B8F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D41B00E4-7224-4F8E-831B-69E5E89B8F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D41B00E4-7224-4F8E-831B-69E5E89B8F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
