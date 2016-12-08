@@ -10,13 +10,13 @@ namespace DADSTORM.PCS {
     {
         public static readonly string PROGRAM_NAME = "Operator.exe";
 
-        public void startProcess(string operatorID, int replIndex, int replTotal, string address, List<string> upstreams, OperatorSpecification specs, string routing, LoggingLevel logging, Semantics semantics)
+        public void startProcess(string operatorID, int replIndex, int replTotal, string address, List<string> upstreams, List<string> replicas, OperatorSpecification specs, string routing, LoggingLevel logging, Semantics semantics)
         {
             Process process = new Process();
             process.StartInfo.FileName = PROGRAM_NAME;
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0} {1} {2} ", operatorID, replIndex, replTotal);
-            sb.AppendFormat("{0} [{1}] ", address, String.Join(",", upstreams));
+            sb.AppendFormat("{0} [{1}] [{2}] ", address, String.Join(",", upstreams), String.Join(",", replicas));
             sb.AppendFormat("{0} [{1}] ", specs.Name, String.Join(",", specs.Params).Replace("\"", "\\\"")); //HACK need to convert " to \" because of Operator.exe Main args
             sb.AppendFormat("{0} ", routing);
             sb.AppendFormat("{0} {1}", logging, semantics);

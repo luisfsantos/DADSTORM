@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DADSTORM.Operator
 {
-    public class OperatorProxy : MarshalByRefObject, IOperator, ICommands
+    public class OperatorProxy : MarshalByRefObject, IOperator, ICommands, IReplica
     {
         Operator Op;
         public int ReplIndex{ get; private set; }
@@ -31,6 +31,11 @@ namespace DADSTORM.Operator
         public void send(List<string> tuple)
         {
             Op.addTupleToProcess(tuple);
+        }
+
+
+        public void ack(string uuid) {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -73,6 +78,13 @@ namespace DADSTORM.Operator
 
         public void setLogger(ILogger logger) {
             Op.Logger = logger;
+        }
+
+        #endregion
+
+        #region Replicas
+        public void sendProcessed(string uuid) {
+            Op.addProcessed(uuid);
         }
         #endregion
 

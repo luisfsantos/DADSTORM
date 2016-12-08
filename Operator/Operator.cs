@@ -32,7 +32,8 @@ namespace DADSTORM.Operator {
         public string[] SpecParams { get; private set; }
         public Routing MyRouting { get; private set; }
         public string routing { get; private set; }
-        public string[] upstream_addrs { get; set; } 
+        public string[] upstream_addrs { get; set; }
+        public string[] replica_addrs { get; set; }
 
 
         public LoggingLevel Logging { get; private set; }
@@ -41,6 +42,8 @@ namespace DADSTORM.Operator {
         internal ILogger Logger = new LocalLogger();
 
         private List<Thread> WorkingThreads = new List<Thread>();
+        private List<IOperator> Replicas = new List<IOperator>();
+        private HashSet<string> ProcessedTuples = new HashSet<string>();
         
         internal Dictionary<string, List<IOperator>> downstreamOperators = new Dictionary<string, List<IOperator>>();
         private Dictionary<string, Routing> downstreamRouting = new Dictionary<string, Routing>();
@@ -48,9 +51,7 @@ namespace DADSTORM.Operator {
         internal BlockingCollection<List<string>> inputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
         private BlockingCollection<List<string>> outputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
 
-
-
-        public Operator(string operatorID, int replIndex, int replTotal, string address, string[] upstream_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
+        public Operator(string operatorID, int replIndex, int replTotal, string address, string[] upstream_addrs, string[] replica_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
             this.OperatorID = operatorID;
             this.ReplIndex = replIndex;
             this.ReplTotal = replTotal;
@@ -62,6 +63,7 @@ namespace DADSTORM.Operator {
             createWorker(specName, specParams);
             this.routing = routing;
             this.upstream_addrs = upstream_addrs;
+            this.replica_addrs = replica_addrs;
         }
 
         private void createWorker(string workerName, string[] workerParams) {
@@ -100,26 +102,18 @@ namespace DADSTORM.Operator {
                     Logger.sendInfo(MyAddress, tupleToSend);
                 #endregion
                 foreach (KeyValuePair<string, List<IOperator>> downstreamPair in downstreamOperators) {
+                    int replica = downstreamRouting[downstreamPair.Key].Route(downstreamPair.Value.Count, tupleToSend);
                     try {
-
-                        downstreamPair.Value
-                            [downstreamRouting[downstreamPair.Key]
-                                .Route(downstreamPair.Value.Count, tupleToSend)]
+                        downstreamPair.Value[replica]
                             .send(tupleToSend);
                         CurrentStatus.TupleSent();
 
-                    } catch (SocketException e) {
+                    } catch (SocketException) {
                         CurrentStatus.PresumedDead(downstreamPair.Key);
-                        //TODO: Error checking and verify if it should be removed from Downstream
+                        downstreamPair.Value.RemoveAt(replica);
                     }
                 }
             }
-        }
-
-        private void sendToOutputOperator(List<string> tuple) {
-            //Thread thread = new Thread(() => OutputOperator.writeToFile(tuple));
-           // thread.Start();
-           // thread.Join();
         }
 
         internal void addTupleToSend(List<string> tuple)
@@ -140,6 +134,10 @@ namespace DADSTORM.Operator {
             noDownstream.Set();
         }
 
+        internal void addProcessed(string uuid) {
+            ProcessedTuples.Add(uuid);
+        }
+
         internal void addTupleToProcess(List<string> tuple)
         {
             inputStream.Add(tuple);
@@ -154,7 +152,9 @@ namespace DADSTORM.Operator {
 
         public void run() {
             registerAtUpstreamOperators(upstream_addrs, routing);
-
+            if (Semantics == Semantics.ExactlyOnce) {
+                comunicateWithReplicas(replica_addrs);
+            }
             Thread processThread = new Thread(Worker.execute);
             WorkingThreads.Add(processThread);
             processThread.Start();
@@ -175,11 +175,22 @@ namespace DADSTORM.Operator {
 
         #endregion
 
+        private void comunicateWithReplicas(string[] addresses) {
+            string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";
+            Regex regex = new Regex(pattern);
+
+            foreach (string address in addresses) {
+                if (regex.IsMatch(address) && !address.Equals(MyAddress)) {
+                    Replicas.Add((IOperator)Activator.GetObject(typeof(IOperator), address));
+                }
+            }
+        }
+
+
         public void registerAtUpstreamOperators(string[] addresses, string myRouting) {
             string pattern = @"tcp://(?:[0-9]{1,3}\.){3}[0-9]{1,3}:\d{1,5}/op";
             Regex regex = new Regex(pattern);
 
-            //Thread.Sleep(5000);
             foreach (string address in addresses) {
                 if (regex.IsMatch(address)) {
                     IOperator upstream = (IOperator)Activator.GetObject(typeof(IOperator), address);
@@ -187,7 +198,6 @@ namespace DADSTORM.Operator {
                 } else {
                     TuplesReader tuplesReader = new TuplesReader(this, address /*address is path*/, ReplIndex, ReplTotal);
                     Thread tuplesReaderThread = new Thread(tuplesReader.read);
-                    //tuplesReaderThread.IsBackground = true;
                     tuplesReaderThread.Start();
                 }
 

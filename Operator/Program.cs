@@ -15,13 +15,15 @@ namespace DADSTORM.Operator {
                 replTotal = args[2],
                 address = args[3],
                 upstreams = args[4],
-                specName = args[5],
-                specParamStr = args[6],
-                routing = args[7],
-                logging = args[8],
-                semantics = args[9];
+                replicas = args[5],
+                specName = args[6],
+                specParamStr = args[7],
+                routing = args[8],
+                logging = args[9],
+                semantics = args[10];
 
             string[] upstream_addrs = upstreams.Trim(new char[] { ']', '[' }).Split(',');
+            string[] replica_addrs = replicas.Trim(new char[] { ']', '[' }).Split(',');
             string[] specParams = specParamStr.Trim(new char[] { ']', '[' }).Split(',');
             //Debugger.Launch();
             Console.Title = "Operator: " + operatorID + " & Replica " + replIndex + " of " + replTotal;
@@ -40,7 +42,7 @@ namespace DADSTORM.Operator {
             Operator Op = new Operator(operatorID, 
                 Int32.Parse(replIndex), 
                 Int32.Parse(replTotal), 
-                address, upstream_addrs, 
+                address, upstream_addrs, replica_addrs, 
                 specName, specParams, 
                 routing, logging, 
                 semantics);

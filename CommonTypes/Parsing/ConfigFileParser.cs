@@ -112,9 +112,9 @@ namespace DADSTORM.CommonTypes.Parsing {
             pattern = @"(?<=ADDRESS\s+).+?\n"; //uses lookbehind
             matchstr = Regex.Match(op.ToString(), pattern).ToString();
             matchstr = Regex.Replace(matchstr, @"\s+", "");
-            string[] addresses = matchstr.Split(',');
+            List<string> addresses = matchstr.Split(',').ToList();
 
-            if (addresses.Length != opdata.Rep_fact) {
+            if (addresses.Count != opdata.Rep_fact) {
                 throw new Exception("OPERATOR " + opdata.Id + ": REP_FACT and number of ADDRESSES specified do not match");
             }
 

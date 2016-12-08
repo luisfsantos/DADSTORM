@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DADSTORM.CommonTypes {
@@ -9,7 +10,7 @@ namespace DADSTORM.CommonTypes {
         public string[] Input_ops { get; set; }
         public int Rep_fact { get; set; }
         public string Routing { get; set; }
-        public string[] Addresses { get; set; }
+        public List<string> Addresses { get; set; }
         public OperatorSpecification OperatorSpec { get; set; }
     }
 

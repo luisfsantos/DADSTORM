@@ -39,7 +39,7 @@ namespace DADSTORM.PuppetMaster {
         public ICommands GetReplica(string operatorID, int replica) {
             List<ICommands> result;
             if (operators.TryGetValue(operatorID, out result)) {
-                return result[replica];
+                return result[replica-1];
             } else {
                 return null;
             }
@@ -150,9 +150,10 @@ namespace DADSTORM.PuppetMaster {
                 Match match = regex.Match(address);
                 string ip = match.Result("${ip}");
                 List<string> upstream = getUpstream(op.Value.Input_ops, operatorsData);
-                pcs[ip].startProcess(op.Value.Id, i, op.Value.Addresses.Length, 
+                pcs[ip].startProcess(op.Value.Id, i, op.Value.Addresses.Count, 
                     address, 
-                    upstream, 
+                    upstream,
+                    op.Value.Addresses,
                     op.Value.OperatorSpec, 
                     op.Value.Routing, 
                     loggingLevel, 

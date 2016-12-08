@@ -1,4 +1,5 @@
 ﻿using DADSTORM.CommonTypes;
+using System.Net.Sockets;
 
 namespace DADSTORM.PuppetMaster.Services {
     public class FreezeService : PuppetMasterService {
@@ -12,8 +13,13 @@ namespace DADSTORM.PuppetMaster.Services {
         }
 
         public override void execute() {
-            PuppetMaster.Instance.GetReplica(OpID, Replica).freeze();
+            try {
+                PuppetMaster.Instance.GetReplica(OpID, Replica).freeze(); 
+            } catch (SocketException e) {
+                //TODO: Error checking and verify if it should be removed from Downstream
+            }
             PuppetMaster.Instance.logger.notify(Command.FREEZE, new string[] { OpID, Replica.ToString() });
+
         }
     }
 }

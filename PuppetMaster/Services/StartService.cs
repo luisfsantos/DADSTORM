@@ -1,6 +1,7 @@
 ﻿using DADSTORM.CommonTypes;
 using DADSTORM.RemoteInterfaces;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace DADSTORM.PuppetMaster.Services {
     public class StartService : PuppetMasterService
@@ -16,7 +17,12 @@ namespace DADSTORM.PuppetMaster.Services {
         {
             List<ICommands> replicas = PuppetMaster.Instance.GetOperator(OpID);
             foreach( ICommands replica in replicas) {
-                replica.start();
+                try {
+                    replica.start();
+                } catch (SocketException e) {
+                    //TODO: Error checking and verify if it should be removed from Downstream
+                }
+                
             }
             PuppetMaster.Instance.logger.notify(Command.START, new string[] { OpID });
 
