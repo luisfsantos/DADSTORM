@@ -20,17 +20,17 @@ namespace DADSTORM.CommonTypes.Parsing {
 
         private void readLines() {
             if (String.IsNullOrEmpty(lines)) {
-                lines = File.ReadAllText(path);
+                lines = File.ReadAllText(path).Replace("localhost", "127.0.0.1");
             }
         }
 
         public Dictionary<string, OperatorData> GetOperatorsData() {
             readLines();
 
-            const string pattern = @"\w+\s+INPUT_OPS.+?\n+" +
-                @"REP_FACT\s+\w+\s+ROUTING\s+.+\n+" +
-                @"ADDRESS\s+.+\n+" +
-                @"OPERATOR_SPEC.+\n+";
+            const string pattern = @"(?<=\n)\w+\s+input_ops\s+.+?\s+" +
+                @"rep_fact\s+\d+\s+routing\s+\w+\s+" +
+                @"address\s+.+?" +
+                @"operator_spec.+\n";
             Regex regex = new Regex(pattern);
 
             if (regex.IsMatch(lines)) {
@@ -71,20 +71,19 @@ namespace DADSTORM.CommonTypes.Parsing {
         private void ExtractOperatorInfo(Match op) {
             readLines();
 
-            //Console.WriteLine(op.ToString());
-
             OperatorData opdata = new OperatorData();
             Match match;
             string matchstr;
+            string pattern;
 
             #region - match ID -
-            string pattern = @"\w+(?=\s+INPUT_OPS)"; //uses lookahead
+            pattern = @"\w+(?=\s+input_ops)"; //uses lookahead
             matchstr = Regex.Match(op.ToString(), pattern).ToString();
             opdata.Id = matchstr;
             #endregion
 
             #region - match INPUT_OPS -
-            pattern = @"(?<=INPUT_OPS)(.+?)\n";
+            pattern = @"(?<=input_ops)(.+?)(?=rep_fact)";
 
             matchstr = Regex.Match(op.ToString(), pattern).ToString();
             matchstr = Regex.Replace(matchstr, @"\s+", "");
@@ -93,7 +92,7 @@ namespace DADSTORM.CommonTypes.Parsing {
             #endregion
 
             #region - match REP_FACT -
-            pattern = @"(?<=REP_FACT\s+)\w+"; //uses lookbehind
+            pattern = @"(?<=rep_fact\s+)\d+"; //uses lookbehind
             matchstr = Regex.Match(op.ToString(), pattern).ToString();
             int parsed;
             if (!int.TryParse(matchstr, out parsed))
@@ -102,19 +101,19 @@ namespace DADSTORM.CommonTypes.Parsing {
             #endregion
 
             #region - match ROUTING -
-            pattern = @"(?<=ROUTING\s+)random|primary|hashing\((?<hash>\d+)\)"; //uses lookbehind
+            pattern = @"(?<=routing\s+)random|primary|hashing\((?<hash>\d+)\)"; //uses lookbehind
             match = Regex.Match(op.ToString(), pattern);
             opdata.Routing = match.ToString();
             
             #endregion
 
             #region - match ADDRESSES -
-            pattern = @"(?<=ADDRESS\s+).+?\n"; //uses lookbehind
+            pattern = @"(?<=address)\s+.+?(?=operator_spec)"; //uses lookbehind
             matchstr = Regex.Match(op.ToString(), pattern).ToString();
             matchstr = Regex.Replace(matchstr, @"\s+", "");
-            List<string> addresses = matchstr.Split(',').ToList();
+            string[] addresses = matchstr.Split(',');
 
-            if (addresses.Count != opdata.Rep_fact) {
+            if (addresses.Length != opdata.Rep_fact) {
                 throw new Exception("OPERATOR " + opdata.Id + ": REP_FACT and number of ADDRESSES specified do not match");
             }
 
@@ -129,11 +128,11 @@ namespace DADSTORM.CommonTypes.Parsing {
                     throw new Exception("OPERATOR " + opdata.Id + ": Unavailable port for address " + address);
                 }
             }
-            opdata.Addresses = addresses;
+            opdata.Addresses = addresses.ToList();
             #endregion
 
             #region - match OPERATOR_SPEC -
-            pattern = @"(?<=OPERATOR_SPEC\s+)(?<op>\b\w+\b)(?<params>.+?)?\n"; //uses lookbehind
+            pattern = @"(?<=operator_spec)\s+(?<op>\b\w+\b)(?<params>.+?)?\n"; //uses lookbehind
 
             match = Regex.Match(op.ToString(), pattern);
 
@@ -152,7 +151,7 @@ namespace DADSTORM.CommonTypes.Parsing {
 
         public LoggingLevel GetLogging() {
             readLines();
-            const string pattern = @"(?<=LoggingLevel\s+)(\blight\b|\bfull\b)";
+            const string pattern = @"(?<=\nLoggingLevel\s+)(\blight\b|\bfull\b)";
             string match = Regex.Match(lines, pattern).ToString();
 
             switch (match) {
@@ -168,18 +167,18 @@ namespace DADSTORM.CommonTypes.Parsing {
 
         public Semantics GetSemantics() {
             readLines();
-            const string pattern = @"(?<=Semantics\s+)(\bat-most-once\b|\bat-least-once\b|\bexactly-once\b)";
+            const string pattern = @"(?<=\nSemantics\s+)(\bat-most-once\b|\bat-least-once\b|\bexactly-once\b)";
             string match = Regex.Match(lines, pattern).ToString();
 
             switch (match) {
                 case "at-most-once":
-                    return Semantics.AtMostOnce;
-                case "at-least-once":
                     goto default;
+                case "at-least-once":
+                    return Semantics.AtLeastOnce;
                 case "exactly-once":
                     return Semantics.ExactlyOnce;
                 default:
-                    return Semantics.AtLeastOnce;
+                    return Semantics.AtMostOnce;
             }
         }
 
