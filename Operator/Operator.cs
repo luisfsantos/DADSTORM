@@ -14,9 +14,16 @@ using DADSTORM.Operator.MetaData;
 using System.Linq;
 
 namespace DADSTORM.Operator {
-    
+
+    public struct Tuple {
+        public string uuid;
+        public string parentUuid;
+        public List<string> tuple;
+    }
 
     public class Operator {
+
+        internal string CurrentSendUuid = "-1";
 
         internal int WaitTime { get; private set; }  = 0;
         internal bool HasInterval { get; private set; } = false;
@@ -38,7 +45,7 @@ namespace DADSTORM.Operator {
         public string routing { get; private set; }
         public string[] upstream_addrs { get; set; }
         public string[] replica_addrs { get; set; }
-
+        public string WorkerName;
 
         public LoggingLevel Logging { get; private set; }
         public Semantics ExecutionSemantics { get; private set; }
@@ -54,8 +61,8 @@ namespace DADSTORM.Operator {
         private Dictionary<string, Routing> downstreamRouting = new Dictionary<string, Routing>();
         private Dictionary<string, Timer> tuplesWaiting = new Dictionary<string, Timer>();
 
-        internal BlockingCollection<List<string>> inputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
-        private BlockingCollection<List<string>> outputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
+        internal BlockingCollection<Tuple> inputStream = new BlockingCollection<Tuple>(new ConcurrentQueue<Tuple>());
+        private BlockingCollection<Tuple> outputStream = new BlockingCollection<Tuple>(new ConcurrentQueue<Tuple>());
         internal Dictionary<string, string> ackQueue = new Dictionary<string, string>();
 
         public Operator(string operatorID, int replIndex, int replTotal, string address, string[] upstream_addrs, string[] replica_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
@@ -68,6 +75,7 @@ namespace DADSTORM.Operator {
             this.Logging = (LoggingLevel)Enum.Parse(typeof(LoggingLevel), logging);
             this.ExecutionSemantics = (Semantics)Enum.Parse(typeof(Semantics), semantics);
             createWorker(specName, specParams);
+            this.WorkerName = specName;
             this.routing = routing;
             this.upstream_addrs = upstream_addrs;
             this.replica_addrs = replica_addrs;
@@ -103,20 +111,31 @@ namespace DADSTORM.Operator {
                 if (HasInterval) Thread.Sleep(WaitTime);
                 #endregion
                 noDownstream.WaitOne();
-                tupleToSend = outputStream.Take();
+                Tuple tup = outputStream.Take();
+                tupleToSend = tup.tuple;
+                if (ExecutionSemantics != Semantics.AtMostOnce) {
+                    if (CurrentSendUuid.Equals("-1")) {
+                        CurrentSendUuid = tup.parentUuid;
+                    } else if (tup.parentUuid != null && !CurrentSendUuid.Equals(tup.parentUuid)) {
+                        string upstream_addr = ackQueue[CurrentSendUuid];
+                        ackAsync sendAck = new ackAsync(UpstreamOperators[upstream_addr].ack);
+                        sendAck.BeginInvoke(CurrentSendUuid, null, null);
+                        CurrentSendUuid = tup.parentUuid;
+                    }
+                }
                 bool sent = false;
                 foreach (KeyValuePair<string, SortedList<int, IOperator>> downstreamPair in DownstreamOperators) {
-                    string uuid = generateID();
+                    //string uuid = generateID();
                     do {
                         int replica = downstreamRouting[downstreamPair.Key].Route(downstreamPair.Value.Count, tupleToSend);
                         try {
                             KeyValuePair<int, IOperator> operatorToSend = downstreamPair.Value.ElementAt(replica);
                             #region at-least-once and exactly-once processing
                             if (ExecutionSemantics != Semantics.AtMostOnce) {
-                                addToWaitingForAck(tupleToSend, uuid, downstreamPair.Key, operatorToSend.Key);
+                                addToWaitingForAck(tupleToSend, tup.uuid, downstreamPair.Key, operatorToSend.Key);
                             }
                             #endregion
-                            asyncSend(operatorToSend.Value, tupleToSend, uuid);
+                            asyncSend(operatorToSend.Value, tupleToSend, tup.uuid);
                             CurrentStatus.TupleSent();
                             sent = true;
                         } catch (SocketException) {
@@ -176,9 +195,13 @@ namespace DADSTORM.Operator {
             }   
         }
 
-        internal void addTupleToSend(List<string> tuple)
+        internal void addTupleToSend(string parentUuid, List<string> tuple)
         {
-            outputStream.Add(tuple);
+            Tuple tup = new Tuple();
+            tup.tuple = tuple;
+            tup.uuid = generateID();
+            tup.parentUuid = parentUuid;
+            outputStream.Add(tup);
         }
 
         internal void addDownstreamOperator(string operator_id, int replicaIndex, IOperator op, string routing) {
@@ -195,28 +218,43 @@ namespace DADSTORM.Operator {
             
         }
 
-        internal void addProcessed(string uuid) {
+        internal void addProcessed(List<string> tuple, string uuid) {
+            if (WorkerName == "COUNT") {
+                ((CountWorker)Worker).seenTuples++;
+            } else if (WorkerName == "UNIQ") {
+                UniqueWorker replica = ((UniqueWorker)Worker);
+                if (!replica.UniqueField.Contains(tuple[replica.Field])) {
+                    replica.UniqueField.Add(tuple[replica.Field]);
+                }
+            }
             ProcessedTuples.Add(uuid);
         }
 
         internal void addTupleToProcess(List<string> tuple, string uuid, string upstream_addr)
         {
+            Tuple tup = new Tuple();
+            tup.tuple = tuple;
+            tup.uuid = uuid;
             if (ExecutionSemantics == Semantics.ExactlyOnce) {
                 //check if this has been processed before
-                inputStream.Add(tuple);
+                inputStream.Add(tup);
                 CurrentStatus.TupleRecieved();
             } else if (ExecutionSemantics == Semantics.AtLeastOnce) {
                 //need to only ack if all the tuples relating to this one have been sent!
-                inputStream.Add(tuple);
+                inputStream.Add(tup);
                 CurrentStatus.TupleRecieved();
-                ackQueue(uuid, );
                 if (upstream_addr != null) {
-                    ackAsync sendAck = new ackAsync(UpstreamOperators[upstream_addr].ack);
-                    sendAck.BeginInvoke(uuid, null, null);
+                    if (DownstreamOperators.Count == 0) {
+                        ackAsync sendAck = new ackAsync(UpstreamOperators[upstream_addr].ack);
+                        sendAck.BeginInvoke(CurrentSendUuid, null, null);
+                    } else {
+                        ackQueue.Add(uuid, upstream_addr);
+                    }
                 }
+            
                     
             } else {
-                inputStream.Add(tuple);
+                inputStream.Add(tup);
                 CurrentStatus.TupleRecieved();
             }
             
@@ -226,7 +264,7 @@ namespace DADSTORM.Operator {
             return Guid.NewGuid().ToString("N");
         }
 
-        internal List<string> getTupleToProcess() {
+        internal Tuple getTupleToProcess() {
             return inputStream.Take();
         }
 

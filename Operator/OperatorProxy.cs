@@ -84,7 +84,7 @@ namespace DADSTORM.Operator
 
         #region Replicas
         public void sendProcessed(List<string> tuple, string uuid) {
-            Op.addProcessed(uuid);
+            Op.addProcessed(tuple, uuid);
         }
         #endregion
 

@@ -27,15 +27,15 @@ namespace DADSTORM.Operator {
         // This method is called by the timer delegate.
         public void CheckStatus(Object stateInfo) {
             Operator op = (Operator)stateInfo;
+            retrys += 1;
             if (retrys == maxcount) {
                 op.removeSuspectOperator(operatorID, replicaID);
-                op.ackTuple(uuid);
+                //op.ackTuple(uuid);
+                retrys = 0;
                 op.retrySendTuple(tuple, uuid, operatorID, replicaID);
             } else {
                 op.retrySendTuple(tuple, uuid, operatorID, replicaID);
             }
-            retrys += 1;
-            
         }
     }
 }

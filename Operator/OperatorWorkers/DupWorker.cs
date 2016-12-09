@@ -10,8 +10,8 @@ namespace DADSTORM.Operator.OperatorWorkers
 
         public DupWorker(Operator op) : base(op) {}
 
-        public override void processTuple(List<string> tuple) {
-            Op.addTupleToSend(tuple);
+        public override void processTuple(Tuple tup) {
+            Op.addTupleToSend(tup.uuid, tup.tuple);
         }
     }
 }

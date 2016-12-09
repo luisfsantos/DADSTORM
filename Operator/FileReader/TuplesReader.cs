@@ -25,8 +25,8 @@ namespace DADSTORM.Operator.FileReader {
                     continue;
                 List<string> tuple = makeTuple(line);
                 if (replicaId == op.MyRouting.Route(replicaTotal, tuple)) {
-                    string uuid = op.generateID();
-                    op.addTupleToProcess(tuple, uuid, null);
+                    //string uuid = op.generateID();
+                    op.addTupleToProcess(tuple, "-1", null);
                 }
                     
             }

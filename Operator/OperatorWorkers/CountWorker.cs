@@ -8,16 +8,16 @@ namespace DADSTORM.Operator.OperatorWorkers
 {
     class CountWorker : OperatorWorker {
 
-        private int seenTuples;
+        internal int seenTuples;
         public CountWorker(Operator op) : base(op) {
             seenTuples = 0;
         }
 
-        public override void processTuple(List<string> tuple) {
+        public override void processTuple(Tuple tup) {
             seenTuples++;
             List<string> countTuple = new List<string>();
             countTuple.Add(seenTuples.ToString());
-            Op.addTupleToSend(countTuple);
+            Op.addTupleToSend(tup.uuid, countTuple);
         }
     }
 }

@@ -15,10 +15,11 @@ namespace DADSTORM.Operator.OperatorWorkers {
             this.Method = method.Trim('"');
         }
 
-        public override void processTuple(List<string> tuple) {
+        public override void processTuple(Tuple tup) {
             byte[] code = File.ReadAllBytes(Dll);
             Assembly assembly = Assembly.Load(code);
 
+            List<string> tuple = tup.tuple;
 
             foreach (Type type in assembly.GetTypes()) {
                 if (type.IsClass) {
@@ -35,7 +36,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
                         IList<IList<string>> result = (IList<IList<string>>)resultObject;
 
                         foreach (IList<string> resultTuple in result) {
-                            Op.addTupleToSend((List<string>)resultTuple);
+                            Op.addTupleToSend(tup.uuid, (List<string>)resultTuple);
                         }
                         break;
                     }

@@ -9,8 +9,8 @@ namespace DADSTORM.Operator.OperatorWorkers
     class UniqueWorker : OperatorWorker
     {
 
-        private HashSet<string> UniqueField = new HashSet<string>();
-        private int Field;
+        internal HashSet<string> UniqueField = new HashSet<string>();
+        internal int Field;
 
 
         public UniqueWorker (Operator op, int field) : base(op)
@@ -18,13 +18,14 @@ namespace DADSTORM.Operator.OperatorWorkers
             this.Field = field-1;
         }
 
-        public override void processTuple(List<string> tuple)
+        public override void processTuple(Tuple tup)
         {
+            List<string> tuple = tup.tuple;
             //FIXME checkSize(tuple);
             if(!UniqueField.Contains(tuple[Field]))
             {
                 UniqueField.Add(tuple[Field]);
-                Op.addTupleToSend(tuple);
+                Op.addTupleToSend(tup.uuid, tuple);
             }
         }
     }
