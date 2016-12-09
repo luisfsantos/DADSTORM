@@ -68,6 +68,7 @@
     <Compile Include="RoutingStrategy\PrimaryRouting.cs" />
     <Compile Include="RoutingStrategy\RandomRouting.cs" />
     <Compile Include="RoutingStrategy\Routing.cs" />
+    <Compile Include="WaitingTuple.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

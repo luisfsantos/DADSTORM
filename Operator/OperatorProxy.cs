@@ -28,14 +28,14 @@ namespace DADSTORM.Operator
             Op.addDownstreamOperator(DownstreamID, replica, downstream, routing);
         }
 
-        public void send(List<string> tuple)
+        public void send(List<string> tuple, string uuid)
         {
-            Op.addTupleToProcess(tuple);
+            Op.addTupleToProcess(tuple, uuid, Op.MyAddress);
         }
 
 
         public void ack(string uuid) {
-            throw new NotImplementedException();
+            Op.ackTuple(uuid);
         }
         #endregion
 

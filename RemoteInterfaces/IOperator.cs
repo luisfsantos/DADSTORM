@@ -3,7 +3,7 @@
 namespace DADSTORM.RemoteInterfaces {
     public interface IOperator
     {
-        void send(List<string> tuple);
+        void send(List<string> tuple, string uuid);
         void addDownstreamOperator(string address, string routing, string DownstreamID, int replica);
         void ack(string uuid);
     }

@@ -23,5 +23,5 @@ REP_FACT 1 ROUTING primary
 ADDRESS tcp://127.0.0.1:11008/op
 OPERATOR_SPEC CUSTOM "mylib_nointerface.dll", "OutputOperator", "CustomOperation"
 
-Semantics at-most-once
+Semantics at-least-once
 LoggingLevel full
