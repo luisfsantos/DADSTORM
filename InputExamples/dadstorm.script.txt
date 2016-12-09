@@ -6,7 +6,7 @@
 %%  Freeze OPERATOR_ID REP_ID: after receiving Freeze, the proecess continues receiving messages but stops processing them.
 %%  Unfreeze OPERATOR_ID REP_ID: a frozen process is back to normal execution. It processes all previous pended messages.
 %%  Wait x ms : This command instructs the pupper master to sleep for x milliseconds before reading and executing the following command in the script file.  
-Interval OP1 500
+Interval OP1 200
 Status
 Start OP1
 Start OP2
@@ -15,7 +15,7 @@ Start OP4
 Start OP5
 Status
 %% Crash OP1 0 crashes replica 0 of OP1
-%%Crash OP1 0
+%%Crash OP2 1
 %% Freeze OP2 1 freezes replica 1 of OP2
 %%Freeze OP2 1
 Wait 10000

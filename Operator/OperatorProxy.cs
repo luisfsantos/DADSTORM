@@ -28,9 +28,9 @@ namespace DADSTORM.Operator
             Op.addDownstreamOperator(DownstreamID, replica, downstream, routing);
         }
 
-        public void send(List<string> tuple, string uuid)
+        public void send(List<string> tuple, string uuid, string address)
         {
-            Op.addTupleToProcess(tuple, uuid, Op.MyAddress);
+            Op.addTupleToProcess(tuple, uuid, address);
         }
 
 
@@ -83,7 +83,7 @@ namespace DADSTORM.Operator
         #endregion
 
         #region Replicas
-        public void sendProcessed(string uuid) {
+        public void sendProcessed(List<string> tuple, string uuid) {
             Op.addProcessed(uuid);
         }
         #endregion

@@ -2,6 +2,6 @@
 
 namespace DADSTORM.RemoteInterfaces {
     public interface IReplica {
-        void sendProcessed(string uuid);
+        void sendProcessed(List<string> tuple, string uuid);
     }
 }

@@ -4,12 +4,12 @@ ADDRESS tcp://127.0.0.1:11009/op, tcp://127.0.0.1:11001/op
 OPERATOR_SPEC FILTER 3, "=", "www.tecnico.ulisboa.pt"
 
 OP2 INPUT_OPS OP1
-REP_FACT 2 ROUTING random
+REP_FACT 2 ROUTING primary
 ADDRESS tcp://127.0.0.1:11002/op, tcp://127.0.0.1:11003/op
 OPERATOR_SPEC CUSTOM "mylib_nointerface.dll", "QueryFollowersFile", "getFollowers"
 
 OP3 INPUT_OPS OP2
-REP_FACT 2 ROUTING hashing(0)
+REP_FACT 2 ROUTING primary
 ADDRESS tcp://127.0.0.1:11004/op, tcp://127.0.0.1:11005/op
 OPERATOR_SPEC UNIQ 1
 

@@ -9,7 +9,7 @@ namespace DADSTORM.Operator {
         public List<string> tuple;
         public string uuid;
         public int retrys;
-        private int maxcount = 2;
+        private int maxcount = 3;
         private string operatorID;
         private int replicaID;
 
@@ -27,15 +27,15 @@ namespace DADSTORM.Operator {
         // This method is called by the timer delegate.
         public void CheckStatus(Object stateInfo) {
             Operator op = (Operator)stateInfo;
-            op.retrySendTuple(tuple, uuid, operatorID, replicaID);
-            retrys += 1;
             if (retrys == maxcount) {
                 op.removeSuspectOperator(operatorID, replicaID);
+                op.ackTuple(uuid);
                 op.retrySendTuple(tuple, uuid, operatorID, replicaID);
-
-                //remove operator from working ones
-                //retry send
+            } else {
+                op.retrySendTuple(tuple, uuid, operatorID, replicaID);
             }
+            retrys += 1;
+            
         }
     }
 }

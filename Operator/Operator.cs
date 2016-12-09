@@ -56,6 +56,7 @@ namespace DADSTORM.Operator {
 
         internal BlockingCollection<List<string>> inputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
         private BlockingCollection<List<string>> outputStream = new BlockingCollection<List<string>>(new ConcurrentQueue<List<string>>());
+        internal Dictionary<string, string> ackQueue = new Dictionary<string, string>();
 
         public Operator(string operatorID, int replIndex, int replTotal, string address, string[] upstream_addrs, string[] replica_addrs, string specName, string[] specParams, string routing, string logging, string semantics) {
             this.OperatorID = operatorID;
@@ -110,13 +111,12 @@ namespace DADSTORM.Operator {
                         int replica = downstreamRouting[downstreamPair.Key].Route(downstreamPair.Value.Count, tupleToSend);
                         try {
                             KeyValuePair<int, IOperator> operatorToSend = downstreamPair.Value.ElementAt(replica);
-                            operatorToSend.Value
-                                .send(tupleToSend, uuid);
                             #region at-least-once and exactly-once processing
                             if (ExecutionSemantics != Semantics.AtMostOnce) {
                                 addToWaitingForAck(tupleToSend, uuid, downstreamPair.Key, operatorToSend.Key);
                             }
                             #endregion
+                            asyncSend(operatorToSend.Value, tupleToSend, uuid);
                             CurrentStatus.TupleSent();
                             sent = true;
                         } catch (SocketException) {
@@ -131,30 +131,33 @@ namespace DADSTORM.Operator {
             }
         }
 
+        private void asyncSend(IOperator op, List<string> tupleToSend, string uuid) {
+            sendAsync sender = new sendAsync(op.send);
+            sender.BeginInvoke(tupleToSend, uuid, MyAddress, null, null);
+        }
+
         internal void removeSuspectOperator(string operatorID, int replicaID) {
-            DownstreamOperators[operatorID].Remove(replicaID);
-            CurrentStatus.PresumedDead(operatorID);
-            if (DownstreamOperators[operatorID].Count == 0) {
-                noDownstream.Reset();
-            }
+            if (DownstreamOperators[operatorID].ContainsKey(replicaID))
+                DownstreamOperators[operatorID].Remove(replicaID);
+                CurrentStatus.PresumedDead(operatorID);
+                if (DownstreamOperators[operatorID].Count == 0) {
+                    noDownstream.Reset();
+                }
         }
 
         internal void retrySendTuple(List<string> tuple, string uuid, string operatorID, int replicaID) {
             bool sent = false;
             noDownstream.WaitOne();
             int replica = DownstreamOperators[operatorID].IndexOfKey(replicaID) >= 0 ? DownstreamOperators[operatorID].IndexOfKey(replicaID): downstreamRouting[operatorID].Route(DownstreamOperators[operatorID].Count, tuple);
-            
             do {
                 
                 try {
                     KeyValuePair<int, IOperator> operatorToSend = DownstreamOperators[operatorID].ElementAt(replica);
-                    operatorToSend.Value
-                        .send(tuple, uuid);
+                    asyncSend(operatorToSend.Value, tuple, uuid);
                     CurrentStatus.TupleSent();
                     sent = true;
                 } catch (SocketException) {
-                    CurrentStatus.PresumedDead(operatorID);
-                    DownstreamOperators[operatorID].RemoveAt(replica);
+                    removeSuspectOperator(operatorID, replicaID);
                     replica = downstreamRouting[operatorID].Route(DownstreamOperators[operatorID].Count, tuple);
                 }
             } while (!sent && ExecutionSemantics != Semantics.AtMostOnce);
@@ -163,12 +166,14 @@ namespace DADSTORM.Operator {
         private void addToWaitingForAck(List<string> tupleToSend, string uuid, string operatorID, int replicaID) {
             WaitingTuple wt = new WaitingTuple(tupleToSend, uuid, operatorID, replicaID);
             tuplesWaiting.Add(uuid, new Timer(wt.CheckStatus, this,
-                                   30000, 30000));
+                                   5000, 10000)); //wait 25 seconds before excluding a replica.
         }
 
         internal void ackTuple(string uuid) {
-            tuplesWaiting[uuid].Dispose();
-            tuplesWaiting.Remove(uuid);
+            if (tuplesWaiting.ContainsKey(uuid)) {
+                tuplesWaiting[uuid].Dispose();
+                tuplesWaiting.Remove(uuid);
+            }   
         }
 
         internal void addTupleToSend(List<string> tuple)
@@ -200,12 +205,19 @@ namespace DADSTORM.Operator {
                 //check if this has been processed before
                 inputStream.Add(tuple);
                 CurrentStatus.TupleRecieved();
-            } else {
+            } else if (ExecutionSemantics == Semantics.AtLeastOnce) {
                 //need to only ack if all the tuples relating to this one have been sent!
                 inputStream.Add(tuple);
                 CurrentStatus.TupleRecieved();
-                //if (upstream_addr != null)
-                //    UpstreamOperators[upstream_addr].ack(uuid);
+                ackQueue(uuid, );
+                if (upstream_addr != null) {
+                    ackAsync sendAck = new ackAsync(UpstreamOperators[upstream_addr].ack);
+                    sendAck.BeginInvoke(uuid, null, null);
+                }
+                    
+            } else {
+                inputStream.Add(tuple);
+                CurrentStatus.TupleRecieved();
             }
             
         }

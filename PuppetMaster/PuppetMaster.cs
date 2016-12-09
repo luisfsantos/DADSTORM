@@ -39,7 +39,7 @@ namespace DADSTORM.PuppetMaster {
         public ICommands GetReplica(string operatorID, int replica) {
             List<ICommands> result;
             if (operators.TryGetValue(operatorID, out result)) {
-                return result[replica-1];
+                return result[replica];
             } else {
                 return null;
             }

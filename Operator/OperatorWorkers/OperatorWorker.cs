@@ -18,6 +18,7 @@ namespace DADSTORM.Operator.OperatorWorkers {
                 if (Op.HasInterval) Thread.Sleep(Op.WaitTime);
                 tupleToProcess = Op.getTupleToProcess();
                 processTuple(tupleToProcess);
+                
                 Op.CurrentStatus.TupleProcessed();
             }
         }
